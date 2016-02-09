@@ -17,6 +17,7 @@
 		F4D55DFA1C69974700C77560 /* GCDBlackbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DF91C69974700C77560 /* GCDBlackbox.swift */; };
 		F4D55DFC1C69B7D800C77560 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DFB1C69B7D800C77560 /* MapViewController.swift */; };
 		F4D55DFE1C69BDCB00C77560 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4D55DFD1C69BDCB00C77560 /* MapKit.framework */; };
+		F4D55E001C6A504200C77560 /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DFF1C6A504200C77560 /* UIHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		F4D55DF91C69974700C77560 /* GCDBlackbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDBlackbox.swift; sourceTree = "<group>"; };
 		F4D55DFB1C69B7D800C77560 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		F4D55DFD1C69BDCB00C77560 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		F4D55DFF1C6A504200C77560 /* UIHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +93,7 @@
 				F4B626761C66BE1400D1623C /* CAGradientLayer+Convenience.swift */,
 				F4D55DF51C69872C00C77560 /* UdacityHTTPClient.swift */,
 				F4D55DF91C69974700C77560 /* GCDBlackbox.swift */,
+				F4D55DFF1C6A504200C77560 /* UIHelper.swift */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -186,6 +189,7 @@
 				F4D55DFA1C69974700C77560 /* GCDBlackbox.swift in Sources */,
 				F4B626621C669AE400D1623C /* AppDelegate.swift in Sources */,
 				F4B626771C66BE1400D1623C /* CAGradientLayer+Convenience.swift in Sources */,
+				F4D55E001C6A504200C77560 /* UIHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

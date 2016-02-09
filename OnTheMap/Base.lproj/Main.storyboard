@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Login View Controller-->
@@ -131,32 +130,22 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Qzm-yr-coS">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </mapView>
-                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l9I-V3-BYY">
-                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
-                                <items>
-                                    <navigationItem title="On The Map" id="6ae-kI-vjr"/>
-                                </items>
-                            </navigationBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="l9I-V3-BYY" secondAttribute="trailing" constant="-20" id="3CV-KC-gpL"/>
-                            <constraint firstItem="l9I-V3-BYY" firstAttribute="leading" secondItem="TiL-Oy-OGJ" secondAttribute="leadingMargin" constant="-20" id="6by-he-Dhk"/>
-                            <constraint firstItem="l9I-V3-BYY" firstAttribute="top" secondItem="TiL-Oy-OGJ" secondAttribute="topMargin" constant="20" id="N4n-a0-HbL"/>
                             <constraint firstItem="Qzm-yr-coS" firstAttribute="top" secondItem="TiL-Oy-OGJ" secondAttribute="top" id="oJY-vJ-wvl"/>
                             <constraint firstAttribute="bottom" secondItem="Qzm-yr-coS" secondAttribute="bottom" id="vop-wQ-3PW"/>
                             <constraint firstItem="Qzm-yr-coS" firstAttribute="leading" secondItem="TiL-Oy-OGJ" secondAttribute="leading" id="w0Z-oZ-Hc4"/>
                             <constraint firstAttribute="trailing" secondItem="Qzm-yr-coS" secondAttribute="trailing" id="yB4-DV-KN4"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Map" image="map_icon" id="ECY-nM-rmI"/>
-                    <connections>
-                        <outlet property="navigationBar" destination="l9I-V3-BYY" id="zyO-pS-uU1"/>
-                    </connections>
+                    <navigationItem key="navigationItem" title="On The Map" id="G34-rM-bsM">
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="qa1-zX-5TX"/>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4VB-1O-UB0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2244" y="257"/>
+            <point key="canvasLocation" x="3056" y="257"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="KTC-aE-Pgx">
@@ -168,13 +157,32 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
-                        <segue destination="NJ0-0b-jpL" kind="relationship" relationship="viewControllers" id="6K4-3l-XyI"/>
+                        <segue destination="7Pk-7B-poc" kind="relationship" relationship="viewControllers" id="6K4-3l-XyI"/>
                         <segue destination="d5U-CK-uBb" kind="relationship" relationship="viewControllers" id="rPr-Qq-M35"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ih8-x4-PbN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1424" y="587"/>
+        </scene>
+        <!--Map-->
+        <scene sceneID="nDU-1o-3c0">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="7Pk-7B-poc" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Map" image="map_icon" id="ECY-nM-rmI"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="hb4-gQ-qKC">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="NJ0-0b-jpL" kind="relationship" relationship="rootViewController" id="M93-FO-qqZ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xMr-0s-68K" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2244" y="257"/>
         </scene>
     </scenes>
     <resources>

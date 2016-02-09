@@ -10,15 +10,11 @@ import UIKit
 import MapKit
 
 class MapViewController: UIViewController {
-
-	@IBOutlet weak var navigationBar: UINavigationBar!
 	
 	let locationManager = CLLocationManager()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-	
-		navigationBar.delegate = self
 		
 		if CLLocationManager.locationServicesEnabled() {
 			locationManager.delegate = self
@@ -33,10 +29,4 @@ class MapViewController: UIViewController {
 
 extension MapViewController : CLLocationManagerDelegate {
 	
-}
-
-extension MapViewController : UINavigationBarDelegate {
-	func positionForBar(bar: UIBarPositioning) -> UIBarPosition {
-		return .TopAttached
-	}
 }
