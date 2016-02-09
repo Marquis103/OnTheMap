@@ -49,9 +49,7 @@ class UdacityHTTPClient {
 	func handleNSURLSessionResponse(data: NSData?, response:NSURLResponse?, error:NSError? ) -> AnyObject? {
 		func displayError(error:String) {
 			print(error)
-			performUIUpdatesOnMain {
-				self.userAlert("Login Error", message: error)
-			}
+			self.appDelegate.loginSuccessful = false
 		}
 		
 		//was there an error
@@ -101,9 +99,7 @@ class UdacityHTTPClient {
 			
 			func displayError(error:String) {
 				print(error)
-				performUIUpdatesOnMain {
-					self.userAlert("Login Error", message: error)
-				}
+				self.appDelegate.loginSuccessful = false
 			}
 			
 			//if there is a parsed result and the session id exists set it

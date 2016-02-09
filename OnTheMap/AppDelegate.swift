@@ -19,6 +19,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSNotificationCenter.defaultCenter().postNotificationName("UdacitySessionSetNotification", object: self, userInfo: nil)
 		}
 	}
+	
+	var loginSuccessful:Bool? {
+		didSet {
+			if loginSuccessful == false {
+				NSNotificationCenter.defaultCenter().postNotificationName("UdacityUnsuccessfulLoginNotification", object: self, userInfo: nil)
+			}
+		}
+	}
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		// Override point for customization after application launch.

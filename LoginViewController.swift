@@ -26,7 +26,10 @@ class LoginViewController: UIViewController {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
 		let alertAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
 		alert.addAction(alertAction)
-		presentViewController(alert, animated: true, completion: nil)
+		performUIUpdatesOnMain {
+			self.presentViewController(alert, animated: true, completion: nil)
+		}
+		
 	}
 	
 	func setUpTextFields() {
@@ -41,6 +44,9 @@ class LoginViewController: UIViewController {
 		print(appDelegate.sessionId)
 	}
 
+	func unsuccessfulLogin() {
+		userAlert("Login unsuccessful", message: "Login credentials were not accepted")
+	}
 	
 	//MARK: View Controller functions
 	override func viewWillAppear(animated: Bool) {
@@ -65,6 +71,7 @@ class LoginViewController: UIViewController {
 		setUpTextFields()
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "segueToMap", name: "UdacitySessionSetNotification", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "unsuccessfulLogin", name: "UdacityUnsuccessfulLoginNotification", object: nil)
 		
 	}
 	
