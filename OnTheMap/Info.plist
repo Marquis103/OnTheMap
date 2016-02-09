@@ -49,5 +49,7 @@
 		<string>Roboto-Regular.ttf</string>
 		<string>Roboto-Thin.ttf</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Finding what others are doing near you!</string>
 </dict>
 </plist>

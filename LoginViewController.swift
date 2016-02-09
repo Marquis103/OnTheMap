@@ -39,9 +39,10 @@ class LoginViewController: UIViewController {
 		passwordTextField.attributedPlaceholder = attributedPasswordString
 	}
 	
-	func segueToMap() {
-		print("We have segued")
-		print(appDelegate.sessionId)
+	func segueLoggedInUser() {
+		performUIUpdatesOnMain {
+			self.performSegueWithIdentifier("loggedInUser", sender: nil)
+		}
 	}
 
 	func unsuccessfulLogin() {
@@ -52,9 +53,9 @@ class LoginViewController: UIViewController {
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		if let sessionId = NSUserDefaults.standardUserDefaults().stringForKey("sessionID") {
+		if let sessionId = NSUserDefaults.standardUserDefaults().stringForKey("sessionId") {
 			if let _ = appDelegate.sessionId {
-				segueToMap()
+				segueLoggedInUser()
 			} else {
 				appDelegate.sessionId = sessionId
 			}
@@ -70,7 +71,7 @@ class LoginViewController: UIViewController {
 		
 		setUpTextFields()
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: "segueToMap", name: "UdacitySessionSetNotification", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "segueLoggedInUser", name: "UdacitySessionSetNotification", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "unsuccessfulLogin", name: "UdacityUnsuccessfulLoginNotification", object: nil)
 		
 	}

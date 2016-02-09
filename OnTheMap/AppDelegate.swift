@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var sharedSession = NSURLSession.sharedSession()
 	var sessionId: String? {
 		didSet {
-			NSUserDefaults.standardUserDefaults().setValue(sessionId, forKey: "sessionID")
+			NSUserDefaults.standardUserDefaults().setValue(sessionId, forKey: "sessionId")
 			NSNotificationCenter.defaultCenter().postNotificationName("UdacitySessionSetNotification", object: self, userInfo: nil)
 		}
 	}

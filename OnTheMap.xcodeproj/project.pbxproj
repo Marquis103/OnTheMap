@@ -15,6 +15,8 @@
 		F4B6267A1C670B8200D1623C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B626791C670B8200D1623C /* LoginViewController.swift */; };
 		F4D55DF61C69872C00C77560 /* UdacityHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DF51C69872C00C77560 /* UdacityHTTPClient.swift */; };
 		F4D55DFA1C69974700C77560 /* GCDBlackbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DF91C69974700C77560 /* GCDBlackbox.swift */; };
+		F4D55DFC1C69B7D800C77560 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DFB1C69B7D800C77560 /* MapViewController.swift */; };
+		F4D55DFE1C69BDCB00C77560 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4D55DFD1C69BDCB00C77560 /* MapKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		F4B626791C670B8200D1623C /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		F4D55DF51C69872C00C77560 /* UdacityHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityHTTPClient.swift; sourceTree = "<group>"; };
 		F4D55DF91C69974700C77560 /* GCDBlackbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDBlackbox.swift; sourceTree = "<group>"; };
+		F4D55DFB1C69B7D800C77560 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		F4D55DFD1C69BDCB00C77560 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4D55DFE1C69BDCB00C77560 /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +49,7 @@
 		F4B626551C669AE400D1623C = {
 			isa = PBXGroup;
 			children = (
+				F4D55DFD1C69BDCB00C77560 /* MapKit.framework */,
 				F4B626781C670B6E00D1623C /* Controllers */,
 				F4B626741C66BD5800D1623C /* API */,
 				F4B626731C66BA8800D1623C /* Supporting Files */,
@@ -93,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				F4B626791C670B8200D1623C /* LoginViewController.swift */,
+				F4D55DFB1C69B7D800C77560 /* MapViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -129,6 +136,11 @@
 				TargetAttributes = {
 					F4B6265D1C669AE400D1623C = {
 						CreatedOnToolsVersion = 7.2;
+						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -169,6 +181,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4D55DF61C69872C00C77560 /* UdacityHTTPClient.swift in Sources */,
+				F4D55DFC1C69B7D800C77560 /* MapViewController.swift in Sources */,
 				F4B6267A1C670B8200D1623C /* LoginViewController.swift in Sources */,
 				F4D55DFA1C69974700C77560 /* GCDBlackbox.swift in Sources */,
 				F4B626621C669AE400D1623C /* AppDelegate.swift in Sources */,
