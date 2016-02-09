@@ -13,6 +13,8 @@
 		F4B6266C1C669AE400D1623C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F4B6266A1C669AE400D1623C /* LaunchScreen.storyboard */; };
 		F4B626771C66BE1400D1623C /* CAGradientLayer+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B626761C66BE1400D1623C /* CAGradientLayer+Convenience.swift */; };
 		F4B6267A1C670B8200D1623C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B626791C670B8200D1623C /* LoginViewController.swift */; };
+		F4D55DF61C69872C00C77560 /* UdacityHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DF51C69872C00C77560 /* UdacityHTTPClient.swift */; };
+		F4D55DFA1C69974700C77560 /* GCDBlackbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DF91C69974700C77560 /* GCDBlackbox.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		F4B6266D1C669AE400D1623C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = OnTheMap/Info.plist; sourceTree = "<group>"; };
 		F4B626761C66BE1400D1623C /* CAGradientLayer+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAGradientLayer+Convenience.swift"; sourceTree = "<group>"; };
 		F4B626791C670B8200D1623C /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		F4D55DF51C69872C00C77560 /* UdacityHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityHTTPClient.swift; sourceTree = "<group>"; };
+		F4D55DF91C69974700C77560 /* GCDBlackbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDBlackbox.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +83,8 @@
 			isa = PBXGroup;
 			children = (
 				F4B626761C66BE1400D1623C /* CAGradientLayer+Convenience.swift */,
+				F4D55DF51C69872C00C77560 /* UdacityHTTPClient.swift */,
+				F4D55DF91C69974700C77560 /* GCDBlackbox.swift */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -162,7 +168,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4D55DF61C69872C00C77560 /* UdacityHTTPClient.swift in Sources */,
 				F4B6267A1C670B8200D1623C /* LoginViewController.swift in Sources */,
+				F4D55DFA1C69974700C77560 /* GCDBlackbox.swift in Sources */,
 				F4B626621C669AE400D1623C /* AppDelegate.swift in Sources */,
 				F4B626771C66BE1400D1623C /* CAGradientLayer+Convenience.swift in Sources */,
 			);
@@ -314,6 +322,7 @@
 				F4B626721C669AE400D1623C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

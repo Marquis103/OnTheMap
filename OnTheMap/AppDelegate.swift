@@ -12,7 +12,13 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
-
+	var sharedSession = NSURLSession.sharedSession()
+	var sessionId: String? {
+		didSet {
+			NSUserDefaults.standardUserDefaults().setValue(sessionId, forKey: "sessionID")
+			NSNotificationCenter.defaultCenter().postNotificationName("UdacitySessionSetNotification", object: self, userInfo: nil)
+		}
+	}
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		// Override point for customization after application launch.
