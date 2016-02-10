@@ -6,12 +6,12 @@
 //  Copyright © 2016 Marquis Dennis. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
-struct UdacityHTTPClient {
+struct UdacityHttpClient {
 	
 	//implement singleton design pattern
-	static let sharedInstance: UdacityHTTPClient = UdacityHTTPClient()
+	static let sharedInstance: UdacityHttpClient = UdacityHttpClient()
 	
 	struct Constants {
 		struct UdacityClient {
@@ -32,7 +32,7 @@ struct UdacityHTTPClient {
 		}
 	}
 	
-	func getUdacitySessionRequest(username: String, password: String) -> NSURLRequest? {
+	func getLoginSessionRequest(username: String, password: String) -> NSURLRequest? {
 		let components = NSURLComponents()
 		components.scheme = Constants.UdacityClient.ApiScheme
 		components.host = Constants.UdacityClient.ApiHost

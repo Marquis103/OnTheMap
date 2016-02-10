@@ -76,6 +76,7 @@ class LoginViewController: UIViewController {
 		super.viewDidLoad()
 		
 		appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+		
 		activityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
 		activityIndicatorView.center = view.center
 		activityIndicatorView.hidesWhenStopped = true
@@ -103,7 +104,7 @@ class LoginViewController: UIViewController {
 			return
 		}
 		
-		guard let request = UdacityHTTPClient.sharedInstance.getUdacitySessionRequest(username, password: password) else {
+		guard let request = UdacityHttpClient.sharedInstance.getLoginSessionRequest(username, password: password) else {
 			userAlert("Login Error", message: "Login was unsuccessful, please try again!")
 			return
 		}
@@ -120,7 +121,7 @@ class LoginViewController: UIViewController {
 			}
 			
 			//is the session token in the parsed results
-			guard let sessionToken = parsedResult![UdacityHTTPClient.Constants.UdacityResponseKeys.session]!![UdacityHTTPClient.Constants.UdacityResponseKeys.session_id] as? String else {
+			guard let sessionToken = parsedResult![UdacityHttpClient.Constants.UdacityResponseKeys.session]!![UdacityHttpClient.Constants.UdacityResponseKeys.session_id] as? String else {
 				self.userAlert("Login Unsuccessful", message: "Could not locate session id")
 				return
 			}

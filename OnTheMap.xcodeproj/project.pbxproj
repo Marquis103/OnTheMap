@@ -13,11 +13,13 @@
 		F4B6266C1C669AE400D1623C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F4B6266A1C669AE400D1623C /* LaunchScreen.storyboard */; };
 		F4B626771C66BE1400D1623C /* CAGradientLayer+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B626761C66BE1400D1623C /* CAGradientLayer+Convenience.swift */; };
 		F4B6267A1C670B8200D1623C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B626791C670B8200D1623C /* LoginViewController.swift */; };
-		F4D55DF61C69872C00C77560 /* UdacityHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DF51C69872C00C77560 /* UdacityHTTPClient.swift */; };
+		F4D55DF61C69872C00C77560 /* UdacityHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DF51C69872C00C77560 /* UdacityHttpClient.swift */; };
 		F4D55DFA1C69974700C77560 /* GCDBlackbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DF91C69974700C77560 /* GCDBlackbox.swift */; };
 		F4D55DFC1C69B7D800C77560 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DFB1C69B7D800C77560 /* MapViewController.swift */; };
 		F4D55DFE1C69BDCB00C77560 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4D55DFD1C69BDCB00C77560 /* MapKit.framework */; };
 		F4D55E001C6A504200C77560 /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DFF1C6A504200C77560 /* UIHelper.swift */; };
+		F4D55E021C6ADAF100C77560 /* ParseHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E011C6ADAF100C77560 /* ParseHttpClient.swift */; };
+		F4D55E051C6AF5A100C77560 /* StudentAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E041C6AF5A100C77560 /* StudentAnnotation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,11 +31,13 @@
 		F4B6266D1C669AE400D1623C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = OnTheMap/Info.plist; sourceTree = "<group>"; };
 		F4B626761C66BE1400D1623C /* CAGradientLayer+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAGradientLayer+Convenience.swift"; sourceTree = "<group>"; };
 		F4B626791C670B8200D1623C /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		F4D55DF51C69872C00C77560 /* UdacityHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityHTTPClient.swift; sourceTree = "<group>"; };
+		F4D55DF51C69872C00C77560 /* UdacityHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityHttpClient.swift; sourceTree = "<group>"; };
 		F4D55DF91C69974700C77560 /* GCDBlackbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDBlackbox.swift; sourceTree = "<group>"; };
 		F4D55DFB1C69B7D800C77560 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		F4D55DFD1C69BDCB00C77560 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		F4D55DFF1C6A504200C77560 /* UIHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
+		F4D55E011C6ADAF100C77560 /* ParseHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseHttpClient.swift; sourceTree = "<group>"; };
+		F4D55E041C6AF5A100C77560 /* StudentAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentAnnotation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +55,7 @@
 		F4B626551C669AE400D1623C = {
 			isa = PBXGroup;
 			children = (
+				F4D55E031C6AF53500C77560 /* Views */,
 				F4D55DFD1C69BDCB00C77560 /* MapKit.framework */,
 				F4B626781C670B6E00D1623C /* Controllers */,
 				F4B626741C66BD5800D1623C /* API */,
@@ -91,9 +96,10 @@
 			isa = PBXGroup;
 			children = (
 				F4B626761C66BE1400D1623C /* CAGradientLayer+Convenience.swift */,
-				F4D55DF51C69872C00C77560 /* UdacityHTTPClient.swift */,
+				F4D55DF51C69872C00C77560 /* UdacityHttpClient.swift */,
 				F4D55DF91C69974700C77560 /* GCDBlackbox.swift */,
 				F4D55DFF1C6A504200C77560 /* UIHelper.swift */,
+				F4D55E011C6ADAF100C77560 /* ParseHttpClient.swift */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -105,6 +111,14 @@
 				F4D55DFB1C69B7D800C77560 /* MapViewController.swift */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		F4D55E031C6AF53500C77560 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F4D55E041C6AF5A100C77560 /* StudentAnnotation.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -183,10 +197,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4D55DF61C69872C00C77560 /* UdacityHTTPClient.swift in Sources */,
+				F4D55DF61C69872C00C77560 /* UdacityHttpClient.swift in Sources */,
 				F4D55DFC1C69B7D800C77560 /* MapViewController.swift in Sources */,
+				F4D55E021C6ADAF100C77560 /* ParseHttpClient.swift in Sources */,
 				F4B6267A1C670B8200D1623C /* LoginViewController.swift in Sources */,
 				F4D55DFA1C69974700C77560 /* GCDBlackbox.swift in Sources */,
+				F4D55E051C6AF5A100C77560 /* StudentAnnotation.swift in Sources */,
 				F4B626621C669AE400D1623C /* AppDelegate.swift in Sources */,
 				F4B626771C66BE1400D1623C /* CAGradientLayer+Convenience.swift in Sources */,
 				F4D55E001C6A504200C77560 /* UIHelper.swift in Sources */,

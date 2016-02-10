@@ -142,6 +142,9 @@
                     <navigationItem key="navigationItem" title="On The Map" id="G34-rM-bsM">
                         <barButtonItem key="leftBarButtonItem" title="Logout" id="qa1-zX-5TX"/>
                     </navigationItem>
+                    <connections>
+                        <outlet property="mapView" destination="Qzm-yr-coS" id="r1a-dF-14p"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4VB-1O-UB0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
