@@ -3,12 +3,22 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="Roboto-Regular.ttf">
+            <string>Roboto-Regular</string>
+            <string>Roboto-Regular</string>
+            <string>Roboto-Regular</string>
+            <string>Roboto-Regular</string>
+            <string>Roboto-Regular</string>
+        </mutableArray>
+    </customFonts>
     <scenes>
-        <!--Login View Controller-->
+        <!--LoginViewController-->
         <scene sceneID="JKc-Z2-dvq">
             <objects>
-                <viewController id="yk6-NU-Hwc" customClass="LoginViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="yk6-NU-Hwc" userLabel="LoginViewController" customClass="LoginViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Z6Z-zb-l4N"/>
                         <viewControllerLayoutGuide type="bottom" id="1Bi-d2-Anf"/>
@@ -18,12 +28,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XzI-tW-7bW">
-                                <rect key="frame" x="20" y="261" width="560" height="31"/>
+                                <rect key="frame" x="20" y="260.5" width="560" height="31"/>
                                 <color key="backgroundColor" red="0.90028044871794877" green="0.8631712417892603" blue="0.79964538564682819" alpha="0.76907327586206897" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="31" id="xOg-Ed-C5o"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="EG0-4w-qZd">
@@ -32,34 +43,39 @@
                                     <constraint firstAttribute="height" constant="151.5" id="TKf-w4-CTj"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login to Udacity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C0t-yO-zkf">
-                                <rect key="frame" x="238" y="211" width="125" height="20.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Login to Udacity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C0t-yO-zkf">
+                                <rect key="frame" x="241" y="211" width="119" height="20"/>
+                                <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kPF-wm-Ccz">
-                                <rect key="frame" x="20" y="300" width="560" height="31"/>
+                                <rect key="frame" x="20" y="299.5" width="560" height="31"/>
                                 <color key="backgroundColor" red="0.90028044870000001" green="0.86317124180000004" blue="0.79964538559999998" alpha="0.76907327589999996" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="31" id="ZA3-f1-CNf"/>
                                 </constraints>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TOy-wF-nDz">
-                                <rect key="frame" x="189" y="339" width="223" height="30"/>
+                                <rect key="frame" x="192" y="338.5" width="217" height="30"/>
+                                <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="15"/>
                                 <state key="normal" title="Don't have an account?  Sign Up">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="goToSignUpAtUdacity:" destination="yk6-NU-Hwc" eventType="touchUpInside" id="kyV-WL-gas"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d8y-dE-izG">
-                                <rect key="frame" x="213" y="377" width="175" height="30"/>
+                                <rect key="frame" x="213" y="376.5" width="175" height="30"/>
                                 <color key="backgroundColor" red="0.91860977564102564" green="0.064322286331737033" blue="0.073695231277895831" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="175" id="9Hu-hp-lS0"/>
                                 </constraints>
+                                <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="15"/>
                                 <state key="normal" title="Login">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -94,7 +110,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xh7-xD-ko8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="551" y="574"/>
+            <point key="canvasLocation" x="495" y="-284"/>
         </scene>
         <!--On The Map-->
         <scene sceneID="GBs-TJ-5tc">
@@ -113,7 +129,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jcy-8c-cTG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2244" y="917"/>
+            <point key="canvasLocation" x="1084" y="1291"/>
         </scene>
         <!--On The Map-->
         <scene sceneID="DOF-dD-AFV">
@@ -140,7 +156,19 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="On The Map" id="G34-rM-bsM">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="qa1-zX-5TX"/>
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="qa1-zX-5TX">
+                            <connections>
+                                <action selector="logUserOut:" destination="NJ0-0b-jpL" id="L5N-HQ-pZg"/>
+                            </connections>
+                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="refresh" id="Dgm-w4-7eY">
+                                <connections>
+                                    <action selector="refreshStudentLocations:" destination="NJ0-0b-jpL" id="ER6-Xo-nqS"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="pin_icon" id="OeB-4x-7xd"/>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="Qzm-yr-coS" id="r1a-dF-14p"/>
@@ -148,7 +176,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4VB-1O-UB0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3056" y="257"/>
+            <point key="canvasLocation" x="3044" y="1063"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="KTC-aE-Pgx">
@@ -166,7 +194,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ih8-x4-PbN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1424" y="587"/>
+            <point key="canvasLocation" x="1582" y="385"/>
         </scene>
         <!--Map-->
         <scene sceneID="nDU-1o-3c0">
@@ -185,12 +213,13 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xMr-0s-68K" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2244" y="257"/>
+            <point key="canvasLocation" x="2934" y="-193"/>
         </scene>
     </scenes>
     <resources>
         <image name="list_icon" width="32" height="32"/>
         <image name="logo" width="256" height="256"/>
         <image name="map_icon" width="32" height="32"/>
+        <image name="pin_icon" width="32" height="32"/>
     </resources>
 </document>

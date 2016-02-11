@@ -14,8 +14,62 @@ class MapViewController: UIViewController {
 	let locationManager = CLLocationManager()
 	var appDelegate: AppDelegate!
 	var locations: [[String:AnyObject]]?
+	var activityIndicatorView:UIActivityIndicatorView!
+	var loadingView:UIView!
 	
 	@IBOutlet weak var mapView: MKMapView!
+	
+	//MARK: Actions
+	@IBAction func refreshStudentLocations(sender: UIBarButtonItem) {
+		guard let request = ParseHttpClient.sharedInstance.getStudentLocations(nil) else {
+			print("Unable to retrieve pin locations")
+			return
+		}
+		
+		loadingView.hidden = false
+		activityIndicatorView.startAnimating()
+		UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+		
+		//clear current pins
+		locations?.removeAll()
+		
+		updateLocations(withRequest: request)
+	}
+	
+	@IBAction func logUserOut(sender: UIBarButtonItem) {
+		let loginViewController = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
+		locations?.removeAll()
+		appDelegate.sessionId = nil
+		NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
+		NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
+		
+		if let request = UdacityHttpClient.sharedInstance.getLogoutSessionRequest() {
+			let task = appDelegate.sharedSession.dataTaskWithRequest(request) { data, response, error in
+				
+				let (parsedResult, error) = UIHelper.handleNSURLSessionLogoutResponse(data, response: response, error: error)
+				
+				guard (error == nil) else {
+					self.userAlert("Failed Query", message: (error?.domain)!)
+					return
+					
+				}
+				
+				//is the session token in the parsed results
+				guard let sessionToken = parsedResult![UdacityHttpClient.Constants.UdacityResponseKeys.session]!![UdacityHttpClient.Constants.UdacityResponseKeys.session_id] as? String else {
+					self.userAlert("Login Unsuccessful", message: "Could not locate session id")
+					return
+				}
+				
+				performUIUpdatesOnMain {
+					self.presentViewController(loginViewController, animated: true, completion: nil)
+				}
+			}
+			
+			task.resume()
+			
+		}
+	}
+	
 	
 	//MARK: Functions
 	func userAlert(title:String, message: String) {
@@ -63,6 +117,17 @@ class MapViewController: UIViewController {
 	}
 	
 	func dropPins() {
+		performUIUpdatesOnMain {
+			if self.activityIndicatorView.isAnimating() {
+				self.loadingView.hidden = true
+				self.activityIndicatorView.stopAnimating()
+			}
+			
+			if UIApplication.sharedApplication().isIgnoringInteractionEvents() {
+				UIApplication.sharedApplication().endIgnoringInteractionEvents()
+			}
+		}
+		
 		if let locations = locations {
 			for (_, value) in locations.enumerate() {
 				let studentDict = value
@@ -88,6 +153,16 @@ class MapViewController: UIViewController {
 		
 		appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 		
+		loadingView = UIHelper.activityIndicatorViewLoadingView(self.view.center)
+		loadingView.hidden = true
+		
+		activityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+		activityIndicatorView.center = CGPointMake(loadingView.frame.size.width / 2, loadingView.frame.size.height / 2);
+		loadingView.addSubview(activityIndicatorView)
+		view.addSubview(loadingView!)
+		activityIndicatorView.hidesWhenStopped = true
+		activityIndicatorView.activityIndicatorViewStyle = .WhiteLarge
+		
 		if CLLocationManager.locationServicesEnabled() {
 			locationManager.delegate = self
 			locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
@@ -101,12 +176,28 @@ class MapViewController: UIViewController {
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		guard let request = ParseHttpClient.sharedInstance.getStudentLocations(nil) else {
-			print("Unable to retrieve pin locations")
+		guard appDelegate.sessionId != nil else {
+			let loginViewController = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
+			locations?.removeAll()
+			NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
+			NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
+			presentViewController(loginViewController, animated: true, completion: nil)
+			
 			return
 		}
 		
-		updateLocations(withRequest: request)
+		if let savedLocations = NSUserDefaults.standardUserDefaults().objectForKey("locations") as? [[String:AnyObject]] {
+			locations = savedLocations
+			dropPins()
+		} else {
+		
+			guard let request = ParseHttpClient.sharedInstance.getStudentLocations(nil) else {
+				print("Unable to retrieve pin locations")
+				return
+			}
+		
+			updateLocations(withRequest: request)
+		}
 	}
 }
 

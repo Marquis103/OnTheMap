@@ -14,6 +14,7 @@ class LoginViewController: UIViewController {
 	@IBOutlet weak var passwordTextField: UITextField!
 	var appDelegate: AppDelegate!
 	var activityIndicatorView:UIActivityIndicatorView!
+	var loadingView:UIView!
 	
 	//MARK: UI Functions
 	var backgroundGradient: CAGradientLayer! {
@@ -30,6 +31,7 @@ class LoginViewController: UIViewController {
 		
 		performUIUpdatesOnMain {
 			if self.activityIndicatorView.isAnimating() {
+				self.loadingView.hidden = true
 				self.activityIndicatorView.stopAnimating()
 			}
 			
@@ -45,8 +47,12 @@ class LoginViewController: UIViewController {
 	func setUpTextFields() {
 		let attributedUsernameString = NSAttributedString(string: "  Username", attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
 		let attributedPasswordString = NSAttributedString(string: "  Password", attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
+		
 		usernameTextField.attributedPlaceholder = attributedUsernameString
 		passwordTextField.attributedPlaceholder = attributedPasswordString
+		
+		usernameTextField.delegate = self
+		passwordTextField.delegate = self
 	}
 	
 	func segueLoggedInUser() {
@@ -64,12 +70,14 @@ class LoginViewController: UIViewController {
 		super.viewWillAppear(animated)
 		
 		if let sessionId = NSUserDefaults.standardUserDefaults().stringForKey("sessionId") {
-			if let _ = appDelegate.sessionId {
-				appDelegate.sessionId = sessionId
-			}
+			appDelegate.sessionId = appDelegate.sessionId ?? sessionId
 		
 			segueLoggedInUser()
 		}
+	}
+	
+	override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+		view.endEditing(true)
 	}
 	
 	override func viewDidLoad() {
@@ -77,11 +85,15 @@ class LoginViewController: UIViewController {
 		
 		appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 		
+		loadingView = UIHelper.activityIndicatorViewLoadingView(self.view.center)
+		loadingView.hidden = true
+		
 		activityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-		activityIndicatorView.center = view.center
+		activityIndicatorView.center = CGPointMake(loadingView.frame.size.width / 2, loadingView.frame.size.height / 2);
+		loadingView.addSubview(activityIndicatorView)
+		view.addSubview(loadingView!)
 		activityIndicatorView.hidesWhenStopped = true
-		activityIndicatorView.activityIndicatorViewStyle = .Gray
-		view.addSubview(activityIndicatorView)
+		activityIndicatorView.activityIndicatorViewStyle = .WhiteLarge
 		
 		backgroundGradient = CAGradientLayer().orangeColor()
 		
@@ -95,6 +107,7 @@ class LoginViewController: UIViewController {
 	
 	//MARK: Actions
 	@IBAction func loginUser(sender: UIButton) {
+		loadingView.hidden = false
 		activityIndicatorView.startAnimating()
 		UIApplication.sharedApplication().beginIgnoringInteractionEvents()
 		
@@ -131,6 +144,7 @@ class LoginViewController: UIViewController {
 			
 			performUIUpdatesOnMain {
 				if self.activityIndicatorView.isAnimating() {
+					self.loadingView.hidden = true
 					self.activityIndicatorView.stopAnimating()
 				}
 				
@@ -141,12 +155,23 @@ class LoginViewController: UIViewController {
 		
 		task.resume()
 	}
+	
+	@IBAction func goToSignUpAtUdacity(sender: UIButton) {
+		UIApplication.sharedApplication().openURL(NSURL(string: "https://www.udacity.com/account/auth#!/signin")!)
+	}
+	
+	
 }
 
 extension LoginViewController : UITextFieldDelegate {
 	func textFieldDidBeginEditing(textField: UITextField) {
-		if textField.text == "  Username" || textField.text == "  Password" {
-			textField.text = ""
+		if textField.attributedPlaceholder?.string == "  Username" || textField.attributedPlaceholder?.string == "  Password" {
+			textField.attributedPlaceholder = nil
 		}
+	}
+	
+	func textFieldShouldReturn(textField: UITextField) -> Bool {
+		textField.resignFirstResponder()
+		return true
 	}
 }

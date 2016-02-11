@@ -1,5 +1,5 @@
 //
-//  UdacityHTTPClient.swift
+//  UdacityHttpClient.swift
 //  OnTheMap
 //
 //  Created by Marquis Dennis on 2/8/16.
@@ -43,6 +43,26 @@ struct UdacityHttpClient {
 		request.addValue("application/json", forHTTPHeaderField: "Accept")
 		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 		request.HTTPBody = "{\"udacity\": {\"username\": \"\(username)\", \"password\": \"\(password)\"}}".dataUsingEncoding(NSUTF8StringEncoding)
+		
+		return request
+	}
+	
+	func getLogoutSessionRequest() -> NSURLRequest? {
+		let components = NSURLComponents()
+		components.scheme = Constants.UdacityClient.ApiScheme
+		components.host = Constants.UdacityClient.ApiHost
+		components.path = Constants.UdacityClient.ApiPath + Constants.UdacityClient.ApiMethod
+
+		let request = NSMutableURLRequest(URL: components.URL!)
+		request.HTTPMethod = "DELETE"
+		var xsrfCookie: NSHTTPCookie? = nil
+		let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+		for cookie in sharedCookieStorage.cookies! {
+			if cookie.name == "XSRF-TOKEN" { xsrfCookie = cookie }
+		}
+		if let xsrfCookie = xsrfCookie {
+			request.setValue(xsrfCookie.value, forHTTPHeaderField: "X-XSRF-TOKEN")
+		}
 		
 		return request
 	}
