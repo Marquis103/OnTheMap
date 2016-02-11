@@ -19,7 +19,6 @@ class LoginViewController: UIViewController {
 	//MARK: UI Functions
 	var backgroundGradient: CAGradientLayer! {
 		didSet {
-			backgroundGradient.frame = view.bounds
 			view.layer.insertSublayer(backgroundGradient, atIndex: 0)
 		}
 	}
@@ -42,6 +41,12 @@ class LoginViewController: UIViewController {
 			self.presentViewController(alert, animated: true, completion: nil)
 		}
 		
+	}
+	
+	override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+		backgroundGradient.frame = view.bounds
+		loadingView.center = view.center
+		activityIndicatorView.center = CGPointMake(loadingView.frame.size.width / 2, loadingView.frame.size.height / 2);
 	}
 	
 	func setUpTextFields() {
@@ -96,6 +101,7 @@ class LoginViewController: UIViewController {
 		activityIndicatorView.activityIndicatorViewStyle = .WhiteLarge
 		
 		backgroundGradient = CAGradientLayer().orangeColor()
+		backgroundGradient.frame = view.bounds
 		
 		setUpTextFields()
 		

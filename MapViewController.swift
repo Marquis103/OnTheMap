@@ -141,13 +141,6 @@ class MapViewController: UIViewController {
 	}
 	
 	//MARK: View Controller Lifecycle functions
-	override func viewDidAppear(animated: Bool) {
-		super.viewDidAppear(animated)
-	
-		updateLocations(withRequest: nil)
-		
-	}
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
