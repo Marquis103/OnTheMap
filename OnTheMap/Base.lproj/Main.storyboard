@@ -224,7 +224,7 @@
         <!--On The Map-->
         <scene sceneID="DOF-dD-AFV">
             <objects>
-                <viewController title="On The Map" id="NJ0-0b-jpL" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MapViewController" title="On The Map" id="NJ0-0b-jpL" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1HU-wd-gSw"/>
                         <viewControllerLayoutGuide type="bottom" id="p9f-ZQ-AqI"/>
@@ -259,13 +259,14 @@
                             </barButtonItem>
                             <barButtonItem image="pin_icon" id="OeB-4x-7xd" userLabel="Map Bar Button Item">
                                 <connections>
-                                    <segue destination="C0i-V1-8oG" kind="presentation" identifier="addStudentLocation" id="KeT-4B-Cjw"/>
+                                    <action selector="addStudentLocation:" destination="NJ0-0b-jpL" id="end-pP-UNN"/>
                                 </connections>
                             </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="Qzm-yr-coS" id="r1a-dF-14p"/>
+                        <segue destination="C0i-V1-8oG" kind="presentation" identifier="addStudentLocationSegue" id="Aok-sn-QHC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4VB-1O-UB0" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -296,7 +297,7 @@
                                 </constraints>
                                 <color key="textColor" red="0.95686274509803926" green="0.95686274509803926" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="17"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                                 <variation key="heightClass=compact">
                                     <mask key="constraints">
                                         <exclude reference="nQu-TO-UAQ"/>
@@ -371,7 +372,7 @@
                                 </constraints>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="18"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="oAS-1B-WIv"/>
@@ -404,7 +405,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="cxs-iH-Pap">
-                        <barButtonItem key="rightBarButtonItem" title="Cancel" id="vda-QN-yLg"/>
+                        <barButtonItem key="rightBarButtonItem" title="Cancel" id="vda-QN-yLg">
+                            <connections>
+                                <action selector="cancelLocationAdd:" destination="Igs-p0-Mt1" id="aHi-Mh-Egf"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="bottomView" destination="hJp-OA-QDZ" id="sar-ji-WxU"/>
@@ -423,7 +428,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="KTC-aE-Pgx">
             <objects>
-                <tabBarController id="3Q5-Tm-TsR" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarController" id="3Q5-Tm-TsR" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="bCW-Bz-3sd">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>

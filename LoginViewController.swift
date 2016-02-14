@@ -73,6 +73,14 @@ class LoginViewController: UIViewController {
 	//MARK: View Controller functions
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
+		if let uniqueId = NSUserDefaults.standardUserDefaults().stringForKey("uniqueId") {
+			appDelegate.uniqueId = appDelegate.uniqueId ?? uniqueId
+		}
+		
+		if let studentData = NSUserDefaults.standardUserDefaults().objectForKey("student") as? NSData {
+			let student = NSKeyedUnarchiver.unarchiveObjectWithData(studentData) as! Student
+			appDelegate.student = appDelegate.student ?? student
+		}
 		
 		if let sessionId = NSUserDefaults.standardUserDefaults().stringForKey("sessionId") {
 			appDelegate.sessionId = appDelegate.sessionId ?? sessionId
@@ -145,8 +153,31 @@ class LoginViewController: UIViewController {
 				return
 			}
 			
+			if let studentRequest = UdacityHttpClient.sharedInstance.getStudentDataRequest(self.usernameTextField.text!) {
+				let userTask = self.appDelegate.sharedSession.dataTaskWithRequest(studentRequest) { userData, userResponse, userError in
+					let (parsedResult, _) = UIHelper.handleStudentDataResponse(userData, response: userResponse, error: userError)
+					
+					if let parsedResult = parsedResult {
+						//build student struct and save it
+						let student = UIHelper.getStudent(parsedResult)
+						
+						self.appDelegate.student = student
+						let data = NSKeyedArchiver.archivedDataWithRootObject(student)
+						NSUserDefaults.standardUserDefaults().setObject(data, forKey: "student")
+					}
+				}
+				
+				userTask.resume()
+			}
+			
+			
+			//userTask.resume()
+			
 			self.appDelegate.sessionId = sessionToken
+			self.appDelegate.uniqueId = self.usernameTextField.text
+			
 			NSUserDefaults.standardUserDefaults().setValue(sessionToken, forKey: "sessionId")
+			NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.uniqueId, forKey: "uniqueId")
 			
 			performUIUpdatesOnMain {
 				if self.activityIndicatorView.isAnimating() {

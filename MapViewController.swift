@@ -20,6 +20,65 @@ class MapViewController: UIViewController {
 	@IBOutlet weak var mapView: MKMapView!
 	
 	//MARK: Actions
+	
+	@IBAction func addStudentLocation(sender: UIBarButtonItem) {
+		guard let uniqueId = appDelegate.uniqueId else {
+			userAlert("Add Location Error", message: "Unique Key not identified.  Please login again!")
+			return
+		}
+		
+		if let request = ParseHttpClient.sharedInstance.getStudentLocation(uniqueId) {
+			let task = appDelegate.sharedSession.dataTaskWithRequest(request) { data, response, error in
+				
+				let (parsedResult, error) = UIHelper.handleNSURLStudentLocationsResponse(data, response: response, error: error)
+				
+				guard (error == nil) else {
+					self.userAlert("Add Location Error", message: (error?.domain)!)
+					return
+					
+				}
+				
+				//are there any results
+				let results = parsedResult![ParseHttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]
+				guard results?.count > 0   else {
+					performUIUpdatesOnMain {
+						self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
+					}
+					
+					return
+				}
+				
+				print(results)
+				
+				//if the student object id --hasn't made a post is nil update it if a value exists
+				if self.appDelegate.student?.objectId == nil {
+					self.appDelegate.student?.objectId = results!.first!["objectId"] as? String
+					let data = NSKeyedArchiver.archivedDataWithRootObject(self.appDelegate.student!)
+					NSUserDefaults.standardUserDefaults().setObject(data, forKey: "student")
+				}
+				
+				let alert = UIAlertController(title: "Confirm Location Add", message: "You have already posted a student location.  Would you like to overwrite your current location?", preferredStyle: .Alert)
+				let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+				let overwriteAction = UIAlertAction(title: "Overwrite", style: .Default, handler: { (action) -> Void in
+					performUIUpdatesOnMain {
+						self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
+					}
+				})
+				
+				alert.addAction(overwriteAction)
+				alert.addAction(cancelAction)
+				performUIUpdatesOnMain {
+					self.presentViewController(alert, animated: true, completion: nil)
+				}
+			}
+			
+			task.resume()
+			
+		}
+		
+	}
+	
+	
 	@IBAction func refreshStudentLocations(sender: UIBarButtonItem) {
 		guard let request = ParseHttpClient.sharedInstance.getStudentLocations(nil) else {
 			print("Unable to retrieve pin locations")
@@ -97,7 +156,7 @@ class MapViewController: UIViewController {
 				
 				//are there any results
 				guard let results = parsedResult![ParseHttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]  else {
-					self.userAlert("Failed Query", message: "Could not locate session id")
+					self.locations = nil
 					return
 				}
 				
@@ -133,7 +192,7 @@ class MapViewController: UIViewController {
 				let studentDict = value
 
 				let annotation = StudentAnnotation(title: (studentDict["firstName"] ?? "") as! String + " " + ((studentDict["lastName"] ?? "") as! String) , subtitle: (studentDict["mediaURL"] ?? "") as? String, url: (studentDict["mediaURL"] ?? "") as! String, coordinate: CLLocationCoordinate2D(latitude: (studentDict["latitude"]) as! CLLocationDegrees , longitude: (studentDict["longitude"]) as! CLLocationDegrees))
-			
+		
 				mapView.addAnnotation(annotation)
 				
 			}
@@ -179,18 +238,13 @@ class MapViewController: UIViewController {
 			return
 		}
 		
-		if let savedLocations = NSUserDefaults.standardUserDefaults().objectForKey("locations") as? [[String:AnyObject]] {
-			locations = savedLocations
-			dropPins()
-		} else {
-		
-			guard let request = ParseHttpClient.sharedInstance.getStudentLocations(nil) else {
-				print("Unable to retrieve pin locations")
-				return
-			}
-		
-			updateLocations(withRequest: request)
+		guard let request = ParseHttpClient.sharedInstance.getStudentLocations(nil) else {
+			print("Unable to retrieve pin locations")
+			return
 		}
+		
+		updateLocations(withRequest: request)
+		
 	}
 }
 

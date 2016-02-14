@@ -115,6 +115,76 @@ class UIHelper {
 		}
 	}
 	
+	static func handleStudentActivityPostResponse (data: NSData?, response:NSURLResponse?, error:NSError? ) -> (AnyObject?, NSError?) {
+		func displayError(error:String) -> NSError {
+			print(error)
+			let error = NSError(domain: error, code: -1, userInfo: nil)
+			
+			return error
+		}
+		
+		//was there an error
+		guard (error == nil) else {
+			print(error)
+			return (nil, displayError("There was an error while posting data"))
+		}
+		
+		//did we get a successful response from the API?
+		guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+			return (nil, displayError("Location post request was unsuccessful"))
+		}
+		
+		//guard was there any data returned
+		guard let data = data else {
+			return (nil, displayError("Location post request was unsuccessful"))
+		}
+		
+		let parsedResult: AnyObject!
+		do {
+			parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+			return (parsedResult, nil)
+		} catch {
+			return (nil, displayError("Could not parse the data as JSON: '\(data)'"))
+		}
+		
+	}
+	
+	static func handleStudentDataResponse(data: NSData?, response:NSURLResponse?, error:NSError? ) -> (AnyObject?, NSError?) {
+		
+		func displayError(error:String) -> NSError {
+			print(error)
+			let error = NSError(domain: error, code: -1, userInfo: nil)
+			
+			return error
+		}
+		
+		//was there an error
+		guard (error == nil) else {
+			print(error)
+			return (nil, displayError("There was an error while retrieving student data"))
+		}
+		
+		//did we get a successful response from the API?
+		guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+			return (nil, displayError("Student data request was unsuccessful"))
+		}
+		
+		//guard was there any data returned
+		guard let data = data else {
+			return (nil, displayError("Student data could not be found"))
+		}
+		
+		let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
+		
+		let parsedResult: AnyObject!
+		do {
+			parsedResult = try NSJSONSerialization.JSONObjectWithData(newData, options: .AllowFragments)
+			return (parsedResult, nil)
+		} catch {
+			return (nil, displayError("Could not parse the data as JSON: '\(newData)'"))
+		}
+	}
+	
 	static func activityIndicatorViewLoadingView(center: CGPoint) -> UIView {
 		let loadingView: UIView = UIView()
 		loadingView.frame = CGRectMake(0, 0, 80, 80)
@@ -124,5 +194,15 @@ class UIHelper {
 		loadingView.layer.cornerRadius = 10
 		
 		return loadingView
+	}
+	
+	static func getStudent(studentJSON:AnyObject) -> Student {
+		let user = studentJSON["user"]
+		if let firstName = user!!["first_name"] as? String, lastName = user!!["last_name"] as? String, email = user!!["email"]!!["address"] as? String {
+			return Student(firstName: firstName, lastName: lastName, uniqueKey: email, objectId: nil)
+		} else {
+			
+			return Student(firstName: "", lastName: "", uniqueKey: "", objectId: nil)
+		}
 	}
 }

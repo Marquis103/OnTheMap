@@ -24,6 +24,7 @@
 		F4D55E0A1C6C323200C77560 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4D55E071C6C323200C77560 /* Roboto-Regular.ttf */; };
 		F4D55E0B1C6C323200C77560 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4D55E081C6C323200C77560 /* Roboto-Thin.ttf */; };
 		F4D55E0D1C6C3BD200C77560 /* AddStudentLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E0C1C6C3BD200C77560 /* AddStudentLocationViewController.swift */; };
+		F4D55E101C6EDD9B00C77560 /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E0F1C6EDD9B00C77560 /* Student.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		F4D55E071C6C323200C77560 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		F4D55E081C6C323200C77560 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		F4D55E0C1C6C3BD200C77560 /* AddStudentLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddStudentLocationViewController.swift; sourceTree = "<group>"; };
+		F4D55E0F1C6EDD9B00C77560 /* Student.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 		F4B626551C669AE400D1623C = {
 			isa = PBXGroup;
 			children = (
+				F4D55E0E1C6EDD8B00C77560 /* Model */,
 				F4D55E031C6AF53500C77560 /* Views */,
 				F4D55DFD1C69BDCB00C77560 /* MapKit.framework */,
 				F4B626781C670B6E00D1623C /* Controllers */,
@@ -131,6 +134,14 @@
 				F4D55E041C6AF5A100C77560 /* StudentAnnotation.swift */,
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		F4D55E0E1C6EDD8B00C77560 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				F4D55E0F1C6EDD9B00C77560 /* Student.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -215,6 +226,7 @@
 				F4D55DF61C69872C00C77560 /* UdacityHttpClient.swift in Sources */,
 				F4D55DFC1C69B7D800C77560 /* MapViewController.swift in Sources */,
 				F4D55E021C6ADAF100C77560 /* ParseHttpClient.swift in Sources */,
+				F4D55E101C6EDD9B00C77560 /* Student.swift in Sources */,
 				F4B6267A1C670B8200D1623C /* LoginViewController.swift in Sources */,
 				F4D55DFA1C69974700C77560 /* GCDBlackbox.swift in Sources */,
 				F4D55E0D1C6C3BD200C77560 /* AddStudentLocationViewController.swift in Sources */,

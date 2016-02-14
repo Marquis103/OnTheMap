@@ -18,6 +18,7 @@ struct UdacityHttpClient {
 			static let ApiScheme = "https"
 			static let ApiHost = "www.udacity.com"
 			static let ApiPath = "/api"
+			static let APIMethodUsers = "/users"
 			static let ApiMethod = "/session"
 		}
 		
@@ -65,5 +66,20 @@ struct UdacityHttpClient {
 		}
 		
 		return request
+	}
+	
+	func getStudentDataRequest(username: String) -> NSURLRequest? {
+		let components = NSURLComponents()
+		components.scheme = Constants.UdacityClient.ApiScheme
+		components.host = Constants.UdacityClient.ApiHost
+		components.path = Constants.UdacityClient.ApiPath + Constants.UdacityClient.APIMethodUsers
+		components.query = "/\(username)"
+		
+		let urlString = components.URL?.absoluteString.stringByReplacingOccurrencesOfString("?", withString: "")
+		let request = NSMutableURLRequest(URL: NSURL(string: urlString!)!)
+		
+		return request
+		
+		
 	}
 }
