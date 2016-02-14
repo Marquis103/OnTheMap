@@ -25,6 +25,7 @@
 		F4D55E0B1C6C323200C77560 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4D55E081C6C323200C77560 /* Roboto-Thin.ttf */; };
 		F4D55E0D1C6C3BD200C77560 /* AddStudentLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E0C1C6C3BD200C77560 /* AddStudentLocationViewController.swift */; };
 		F4D55E101C6EDD9B00C77560 /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E0F1C6EDD9B00C77560 /* Student.swift */; };
+		F4D55E121C70EA9500C77560 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E111C70EA9500C77560 /* ListViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		F4D55E081C6C323200C77560 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		F4D55E0C1C6C3BD200C77560 /* AddStudentLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddStudentLocationViewController.swift; sourceTree = "<group>"; };
 		F4D55E0F1C6EDD9B00C77560 /* Student.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
+		F4D55E111C70EA9500C77560 /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +126,7 @@
 				F4B626791C670B8200D1623C /* LoginViewController.swift */,
 				F4D55DFB1C69B7D800C77560 /* MapViewController.swift */,
 				F4D55E0C1C6C3BD200C77560 /* AddStudentLocationViewController.swift */,
+				F4D55E111C70EA9500C77560 /* ListViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 			files = (
 				F4D55DF61C69872C00C77560 /* UdacityHttpClient.swift in Sources */,
 				F4D55DFC1C69B7D800C77560 /* MapViewController.swift in Sources */,
+				F4D55E121C70EA9500C77560 /* ListViewController.swift in Sources */,
 				F4D55E021C6ADAF100C77560 /* ParseHttpClient.swift in Sources */,
 				F4D55E101C6EDD9B00C77560 /* Student.swift in Sources */,
 				F4B6267A1C670B8200D1623C /* LoginViewController.swift in Sources */,

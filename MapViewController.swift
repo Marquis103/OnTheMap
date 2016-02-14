@@ -12,10 +12,11 @@ import MapKit
 class MapViewController: UIViewController {
 	
 	let locationManager = CLLocationManager()
-	var appDelegate: AppDelegate!
-	var locations: [[String:AnyObject]]?
+	//var locations: [[String:AnyObject]]?
 	var activityIndicatorView:UIActivityIndicatorView!
 	var loadingView:UIView!
+	
+	weak var appDelegate: AppDelegate!
 	
 	@IBOutlet weak var mapView: MKMapView!
 	
@@ -47,8 +48,6 @@ class MapViewController: UIViewController {
 					
 					return
 				}
-				
-				print(results)
 				
 				//if the student object id --hasn't made a post is nil update it if a value exists
 				if self.appDelegate.student?.objectId == nil {
@@ -90,14 +89,14 @@ class MapViewController: UIViewController {
 		UIApplication.sharedApplication().beginIgnoringInteractionEvents()
 		
 		//clear current pins
-		locations?.removeAll()
+		appDelegate.locations?.removeAll()
 		
 		updateLocations(withRequest: request)
 	}
 	
 	@IBAction func logUserOut(sender: UIBarButtonItem) {
 		let loginViewController = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
-		locations?.removeAll()
+		self.appDelegate.locations?.removeAll()
 		appDelegate.sessionId = nil
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
@@ -139,7 +138,6 @@ class MapViewController: UIViewController {
 		performUIUpdatesOnMain {
 			self.presentViewController(alert, animated: true, completion: nil)
 		}
-		
 	}
 	
 	func updateLocations(withRequest request:NSURLRequest?) {
@@ -156,12 +154,12 @@ class MapViewController: UIViewController {
 				
 				//are there any results
 				guard let results = parsedResult![ParseHttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]  else {
-					self.locations = nil
+					self.appDelegate.locations = nil
 					return
 				}
 				
 				NSUserDefaults.standardUserDefaults().setValue(results, forKey: "locations")
-				self.locations = results
+				self.appDelegate.locations = results
 				performUIUpdatesOnMain {
 					self.dropPins()
 				}
@@ -169,7 +167,7 @@ class MapViewController: UIViewController {
 			
 			task.resume()
 		} else {
-			if let _ = locations {
+			if let _ = self.appDelegate.locations {
 				dropPins()
 			}
 		}
@@ -187,7 +185,7 @@ class MapViewController: UIViewController {
 			}
 		}
 		
-		if let locations = locations {
+		if let locations = self.appDelegate.locations {
 			for (_, value) in locations.enumerate() {
 				let studentDict = value
 
@@ -230,7 +228,7 @@ class MapViewController: UIViewController {
 		
 		guard appDelegate.sessionId != nil else {
 			let loginViewController = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
-			locations?.removeAll()
+			self.appDelegate.locations?.removeAll()
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
 			presentViewController(loginViewController, animated: true, completion: nil)
@@ -256,8 +254,14 @@ extension MapViewController : MKMapViewDelegate {
 	func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
 		if view.rightCalloutAccessoryView == control {
 			let annotation = view.annotation as! StudentAnnotation
+			let url = NSURL(string: annotation.url)!
 			
-			UIApplication.sharedApplication().openURL(NSURL(string: annotation.url)!)
+			if !UIApplication.sharedApplication().canOpenURL(url) && (!url.absoluteString.hasPrefix("http://") || !url.absoluteString.hasPrefix("https://")) {
+				let urlString = "http://" + url.absoluteString
+				UIApplication.sharedApplication().openURL(NSURL(string: urlString)!)
+			} else {
+				UIApplication.sharedApplication().openURL(url)
+			}
 		}
 	}
 	

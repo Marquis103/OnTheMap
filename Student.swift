@@ -23,7 +23,7 @@ class Student : NSObject, NSCoding {
 	
 	convenience required init?(coder aDecoder: NSCoder) {
 		guard let uniqueKey = aDecoder.decodeObjectForKey("uniqueKey") as? String,
-			let firstName = aDecoder.decodeObjectForKey("lastName") as? String,
+			let firstName = aDecoder.decodeObjectForKey("firstName") as? String,
 			let lastName = aDecoder.decodeObjectForKey("lastName") as? String
 			else {
 				return nil
