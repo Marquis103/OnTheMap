@@ -79,7 +79,20 @@ struct UdacityHttpClient {
 		let request = NSMutableURLRequest(URL: NSURL(string: urlString!)!)
 		
 		return request
+	}
+	
+	func getFacebookLoginRequest(accessToken: String) -> NSURLRequest? {
+		let components = NSURLComponents()
+		components.scheme = Constants.UdacityClient.ApiScheme
+		components.host = Constants.UdacityClient.ApiHost
+		components.path = Constants.UdacityClient.ApiPath + Constants.UdacityClient.ApiMethod
 		
-		
+		let request = NSMutableURLRequest(URL: components.URL!)
+		request.HTTPMethod = "POST"
+		request.addValue("application/json", forHTTPHeaderField: "Accept")
+		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+		request.HTTPBody = "{\"facebook_mobile\": {\"access_token\": \"\(accessToken)\"}}".dataUsingEncoding(NSUTF8StringEncoding)
+
+		return request
 	}
 }

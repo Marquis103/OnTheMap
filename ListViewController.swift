@@ -168,10 +168,10 @@ class ListViewController: UIViewController {
 			
 			task.resume()
 		} else {
-			if let _ = self.appDelegate.locations {
-				if self.activityIndicatorView.isAnimating() {
-					self.loadingView.hidden = true
-					self.activityIndicatorView.stopAnimating()
+			if let _ = appDelegate.locations {
+				if activityIndicatorView.isAnimating() {
+					loadingView.hidden = true
+					activityIndicatorView.stopAnimating()
 				}
 				
 				if UIApplication.sharedApplication().isIgnoringInteractionEvents() {

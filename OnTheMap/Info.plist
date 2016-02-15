@@ -50,6 +50,28 @@
 		<string>Roboto-Thin.ttf</string>
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Finding what others are doing near you!</string>
+	<string>Finding out what others are doing near you!</string>
+	<key>FacebookAppID</key>
+	<string>365362206864879</string>
+	<key>FacebookUrlSchemeSuffix</key>
+	<string>onthemap</string>
+	<key>FacebookDisplayName</key>
+	<string>Udacity</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbaapi</string>
+		<string>fbauth2</string>
+	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string></string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb365362206864879onthemap</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

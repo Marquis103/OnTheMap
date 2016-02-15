@@ -21,7 +21,7 @@ class AddStudentLocationViewController: UIViewController {
 	
 	var isMapVisible = false
 	var btnAddLocation:UIButton!
-	var appDelegate:AppDelegate!
+	weak var appDelegate:AppDelegate!
 	
 	private var buttonWidth:CGFloat!
 	var locationRequest:NSURLRequest?
@@ -111,7 +111,6 @@ class AddStudentLocationViewController: UIViewController {
 		btnAddLocation.addTarget(self, action: "postStudentLocation", forControlEvents: .TouchUpInside)
 		view.addSubview(btnAddLocation)
 		
-		//view.addConstraints([centerLayout, bottomLayout])
 		btnAddLocation.hidden = true
 		
 		locationTextField.delegate = self

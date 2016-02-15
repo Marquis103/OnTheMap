@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import FBSDKLoginKit
 
 class MapViewController: UIViewController {
 	
@@ -100,6 +101,7 @@ class MapViewController: UIViewController {
 		appDelegate.sessionId = nil
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
+		FBSDKAccessToken.setCurrentAccessToken(nil)
 		
 		if let request = UdacityHttpClient.sharedInstance.getLogoutSessionRequest() {
 			let task = appDelegate.sharedSession.dataTaskWithRequest(request) { data, response, error in
@@ -113,7 +115,7 @@ class MapViewController: UIViewController {
 				}
 				
 				//is the session token in the parsed results
-				guard let sessionToken = parsedResult![UdacityHttpClient.Constants.UdacityResponseKeys.session]!![UdacityHttpClient.Constants.UdacityResponseKeys.session_id] as? String else {
+				guard let _ = parsedResult![UdacityHttpClient.Constants.UdacityResponseKeys.session]!![UdacityHttpClient.Constants.UdacityResponseKeys.session_id] as? String else {
 					self.userAlert("Login Unsuccessful", message: "Could not locate session id")
 					return
 				}
@@ -167,7 +169,7 @@ class MapViewController: UIViewController {
 			
 			task.resume()
 		} else {
-			if let _ = self.appDelegate.locations {
+			if let _ = appDelegate.locations {
 				dropPins()
 			}
 		}
