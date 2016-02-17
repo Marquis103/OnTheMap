@@ -13,11 +13,10 @@ import FBSDKCoreKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
-	var sharedSession = NSURLSession.sharedSession()
 	var sessionId: String?
 	var uniqueId:String?
-	var student:Student?
-	var locations:[[String:AnyObject]]?
+	var students:[StudentInformation]?
+	var currentStudent:StudentInformation?
 	
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)

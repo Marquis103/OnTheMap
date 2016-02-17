@@ -129,13 +129,18 @@ class LoginViewController: UIViewController {
 	//MARK: View Controller functions
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
+			
 		if let uniqueId = NSUserDefaults.standardUserDefaults().stringForKey("uniqueId") {
 			appDelegate.uniqueId = appDelegate.uniqueId ?? uniqueId
-		}
-		
-		if let studentData = NSUserDefaults.standardUserDefaults().objectForKey("student") as? NSData {
-			let student = NSKeyedUnarchiver.unarchiveObjectWithData(studentData) as! Student
-			appDelegate.student = appDelegate.student ?? student
+			
+			HttpClient.sharedInstance.getUdacityStudentData(nil, withUsername: uniqueId) { (studentResult, error) -> Void in
+				guard error == nil else {
+					self.userAlert("Login Unsuccessful", message: "Could not retrieve user data")
+					return
+				}
+				
+				self.appDelegate.currentStudent = StudentInformation.getBasicStudent(withJSONData: studentResult! as! [String : AnyObject])
+			}
 		}
 		
 		if let sessionId = NSUserDefaults.standardUserDefaults().stringForKey("sessionId") {
@@ -206,73 +211,50 @@ class LoginViewController: UIViewController {
 			return
 		}
 		
-		guard let request = UdacityHttpClient.sharedInstance.getLoginSessionRequest(username, password: password) else {
-			userAlert("Login Error", message: "Login was unsuccessful, please try again!")
-			return
-		}
+		var loginParameters = [String:AnyObject]()
+		loginParameters["username"] = username
+		loginParameters["password"] = password
 		
-		
-		let task = appDelegate.sharedSession.dataTaskWithRequest(request) { data, response, error in
-			
-			let (parsedResult, error) = UIHelper.handleNSURLSessionLoginResponse(data, response: response, error: error)
-			
-			guard (error == nil) else {
-				self.userAlert("Login Unsuccessful", message: (error?.domain)!)
+		HttpClient.sharedInstance.getUdacityLoginSession(loginParameters) { (result, error) -> Void in
+			guard error == nil else {
+				self.userAlert("Login Unsuccessful", message: "Login credentials could not be validated")
 				return
-				
 			}
 			
-			//is the session token in the parsed results
-			guard let sessionToken = parsedResult![UdacityHttpClient.Constants.UdacityResponseKeys.session]!![UdacityHttpClient.Constants.UdacityResponseKeys.session_id] as? String else {
+			guard let sessionToken = result![HttpClient.Constants.UdacityResponseKeys.session]!![HttpClient.Constants.UdacityResponseKeys.session_id] as? String else {
 				self.userAlert("Login Unsuccessful", message: "Could not locate session id")
 				return
 			}
 			
-			if let studentRequest = UdacityHttpClient.sharedInstance.getStudentDataRequest(self.usernameTextField.text!) {
-				let userTask = self.appDelegate.sharedSession.dataTaskWithRequest(studentRequest) { userData, userResponse, userError in
-					let (parsedResult, _) = UIHelper.handleStudentDataResponse(userData, response: userResponse, error: userError)
-					
-					if let parsedResult = parsedResult {
-						//build student struct and save it
-						let student = UIHelper.getStudent(parsedResult)
-						
-						self.appDelegate.student = student
-						let data = NSKeyedArchiver.archivedDataWithRootObject(student)
-						NSUserDefaults.standardUserDefaults().setObject(data, forKey: "student")
+			HttpClient.sharedInstance.getUdacityStudentData(nil, withUsername: self.usernameTextField.text!) { (studentResult, error) -> Void in
+				guard error == nil else {
+					self.userAlert("Login Unsuccessful", message: "Could not retrieve user data")
+					return
+				}
+				
+				self.appDelegate.currentStudent = StudentInformation.getBasicStudent(withJSONData: studentResult! as! [String : AnyObject])
+				
+				self.appDelegate.sessionId = sessionToken
+				self.appDelegate.uniqueId = self.appDelegate.currentStudent?.uniqueKey
+				
+				NSUserDefaults.standardUserDefaults().setValue(sessionToken, forKey: "sessionId")
+				NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.uniqueId, forKey: "uniqueId")
+				
+				performUIUpdatesOnMain {
+					if self.activityIndicatorView.isAnimating() {
+						self.loadingView.hidden = true
+						self.activityIndicatorView.stopAnimating()
 					}
+					
+					self.segueLoggedInUser()
 				}
-				
-				userTask.resume()
 			}
-			
-			
-			//userTask.resume()
-			
-			self.appDelegate.sessionId = sessionToken
-			self.appDelegate.uniqueId = self.usernameTextField.text
-			
-			NSUserDefaults.standardUserDefaults().setValue(sessionToken, forKey: "sessionId")
-			NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.uniqueId, forKey: "uniqueId")
-			
-			performUIUpdatesOnMain {
-				if self.activityIndicatorView.isAnimating() {
-					self.loadingView.hidden = true
-					self.activityIndicatorView.stopAnimating()
-				}
-				
-				self.segueLoggedInUser()
-			}
-			
 		}
-		
-		task.resume()
 	}
 	
 	@IBAction func goToSignUpAtUdacity(sender: UIButton) {
 		UIApplication.sharedApplication().openURL(NSURL(string: "https://www.udacity.com/account/auth#!/signin")!)
 	}
-	
-	
 }
 
 extension LoginViewController : UITextFieldDelegate {
@@ -296,6 +278,7 @@ extension LoginViewController : FBSDKLoginButtonDelegate {
 	
 	func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
 		guard error == nil else {
+			FBSDKAccessToken.setCurrentAccessToken(nil)
 			userAlert("Login Error", message: "Unable to authenticate using Facebook!")
 			return
 		}
@@ -312,63 +295,45 @@ extension LoginViewController : FBSDKLoginButtonDelegate {
 				return
 			}
 			
-			//self.appDelegate.accessToken = FBSDKAccessToken.currentAccessToken()
+			var facebookParameters = [String:AnyObject]()
+			facebookParameters["accessToken"] = FBSDKAccessToken.currentAccessToken().tokenString
 			
-			guard let request = UdacityHttpClient.sharedInstance.getFacebookLoginRequest(FBSDKAccessToken.currentAccessToken().tokenString) else {
-				self.userAlert("Login Failure", message: "Could not generate facebook request")
-				return
-			}
-			
-			let task = self.appDelegate.sharedSession.dataTaskWithRequest(request) { data, response, error in
-				let (parsedResult, error) = UIHelper.handleNSURLSessionLoginResponse(data, response: response, error: error)
-				
-				guard (error == nil) else {
-					self.userAlert("Login Unsuccessful", message: (error?.domain)!)
+			HttpClient.sharedInstance.getFacebookLoginRequest(facebookParameters) { (fbresult, error) -> Void in
+				guard error == nil else {
+					self.userAlert("Login Unsuccessful", message: "Was unable to login with Facebook.")
 					return
-					
 				}
 				
-				//is the session token in the parsed results
-				guard let sessionToken = parsedResult![UdacityHttpClient.Constants.UdacityResponseKeys.session]!![UdacityHttpClient.Constants.UdacityResponseKeys.session_id] as? String else {
+				guard let sessionToken = fbresult![HttpClient.Constants.UdacityResponseKeys.session]!![HttpClient.Constants.UdacityResponseKeys.session_id] as? String else {
 					self.userAlert("Login Unsuccessful", message: "Could not locate session id")
 					return
 				}
 				
-				if let studentRequest = UdacityHttpClient.sharedInstance.getStudentDataRequest(result["email"] as! String) {
-					let userTask = self.appDelegate.sharedSession.dataTaskWithRequest(studentRequest) { userData, userResponse, userError in
-						let (parsedResult, _) = UIHelper.handleStudentDataResponse(userData, response: userResponse, error: userError)
-						
-						if let parsedResult = parsedResult {
-							//build student struct and save it
-							let student = UIHelper.getStudent(parsedResult)
-							
-							self.appDelegate.student = student
-							let data = NSKeyedArchiver.archivedDataWithRootObject(student)
-							NSUserDefaults.standardUserDefaults().setObject(data, forKey: "student")
+				HttpClient.sharedInstance.getUdacityStudentData(nil, withUsername: result["email"] as! String) { (studentResult, error) -> Void in
+					guard error == nil else {
+						FBSDKAccessToken.setCurrentAccessToken(nil)
+						self.userAlert("Login Unsuccessful", message: "Could not retrieve user data")
+						return
+					}
+					
+					self.appDelegate.currentStudent = StudentInformation.getBasicStudent(withJSONData: studentResult! as! [String : AnyObject])
+					
+					self.appDelegate.sessionId = sessionToken
+					self.appDelegate.uniqueId = self.appDelegate.currentStudent?.uniqueKey
+					
+					NSUserDefaults.standardUserDefaults().setValue(sessionToken, forKey: "sessionId")
+					NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.uniqueId, forKey: "uniqueId")
+					
+					performUIUpdatesOnMain {
+						if self.activityIndicatorView.isAnimating() {
+							self.loadingView.hidden = true
+							self.activityIndicatorView.stopAnimating()
 						}
+						
+						self.segueLoggedInUser()
 					}
-					
-					userTask.resume()
-				}
-				
-				self.appDelegate.sessionId = sessionToken
-				self.appDelegate.uniqueId = result["email"] as? String
-				
-				NSUserDefaults.standardUserDefaults().setValue(sessionToken, forKey: "sessionId")
-				NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.uniqueId, forKey: "uniqueId")
-				
-				performUIUpdatesOnMain {
-					if self.activityIndicatorView.isAnimating() {
-						self.loadingView.hidden = true
-						self.activityIndicatorView.stopAnimating()
-					}
-					
-					self.segueLoggedInUser()
 				}
 			}
-			
-			task.resume()
-			
 		}
 	}
 }

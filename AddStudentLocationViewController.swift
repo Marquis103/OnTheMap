@@ -22,15 +22,14 @@ class AddStudentLocationViewController: UIViewController {
 	var isMapVisible = false
 	var btnAddLocation:UIButton!
 	weak var appDelegate:AppDelegate!
-	
+	var activityIndicatorView:UIActivityIndicatorView!
+	var loadingView:UIView!
 	private var buttonWidth:CGFloat!
 	var locationRequest:NSURLRequest?
 	
 	//MARK: Functions
 	func postStudentLocation() {
-		if let annotation = mapView.annotations.first, student = appDelegate.student {
-			//is the request an update or a new post
-			var update = false
+		if let annotation = mapView.annotations.first, student = appDelegate.currentStudent {
 			
 			var queryParameters = [String:AnyObject]()
 			
@@ -42,52 +41,54 @@ class AddStudentLocationViewController: UIViewController {
 			queryParameters["latitude"] = annotation.coordinate.latitude
 			queryParameters["longitude"] = annotation.coordinate.longitude
 			
-			if let objectId = appDelegate.student?.objectId {
-				guard let request = ParseHttpClient.sharedInstance.updateStudentLocation(queryParameters, objectId: objectId) else {
-					userAlert("Post Error", message: "There was an posting location")
-					return
-				}
-				
-				update = true
-				locationRequest = request
-			} else {
-				guard let request = ParseHttpClient.sharedInstance.postStudentLocation(queryParameters) else {
-					userAlert("Post Error", message: "There was an posting location")
-					return
-				}
-				
-				locationRequest = request
-			}
 			
-			let task = appDelegate.sharedSession.dataTaskWithRequest(locationRequest!) {data, response, error in
-				if !update {
-					let (parsedResult, error) = UIHelper.handleStudentDataResponse(data, response: response, error: error)
-					
+			if let objectId = appDelegate.currentStudent?.objectId where appDelegate.currentStudent?.objectId != "" {
+				HttpClient.sharedInstance.updateStudentLocation(queryParameters, objectId: objectId, completionHandler: { (result, error) -> Void in
 					guard error == nil else {
-						performUIUpdatesOnMain {
-							self.userAlert("Post Error", message: "There was an error posting location")
-						}
-						
+						self.userAlert("Post Error", message: (error?.userInfo["NSLocalizedDescriptionKey"]!)! as! String)
+						return
+					}
+					
+					
+					//update currentStudent
+					self.appDelegate.currentStudent?.uniqueKey = queryParameters["uniqueKey"] as! String
+					self.appDelegate.currentStudent?.mediaURL = queryParameters["mediaURL"] as! String
+					self.appDelegate.currentStudent?.mapString = queryParameters["mapString"] as! String
+					self.appDelegate.currentStudent?.latitude = queryParameters["latitude"] as! Float
+					self.appDelegate.currentStudent?.longitude = queryParameters["longitude"] as! Float
+					
+					performUIUpdatesOnMain {
+						self.performSegueWithIdentifier("showMapSegue", sender: nil)
+					}
+				})
+				
+			} else {
+				HttpClient.sharedInstance.postStudentLocation(queryParameters, completionHandler: { (result, error) -> Void in
+					guard error == nil else {
+						self.userAlert("Post Error", message: (error?.userInfo["NSLocalizedDescriptionKey"]!)! as! String)
 						return
 					}
 					
 					//set objectId if necessary
-					if self.appDelegate.student?.objectId == nil {
-						if let objectId = parsedResult!["objectId"] as? String {
-							self.appDelegate.student?.objectId = objectId
-							let data = NSKeyedArchiver.archivedDataWithRootObject(self.appDelegate.student!)
-							NSUserDefaults.standardUserDefaults().setObject(data, forKey: "student")
+					if self.appDelegate.currentStudent?.objectId == nil {
+						if let objectId = result!["objectId"] as? String {
+							self.appDelegate.currentStudent?.objectId = objectId
 						}
 					}
-				}
+					
+					//update currentStudent
+					self.appDelegate.currentStudent?.uniqueKey = queryParameters["uniqueKey"] as! String
+					self.appDelegate.currentStudent?.mediaURL = queryParameters["mediaURL"] as! String
+					self.appDelegate.currentStudent?.mapString = queryParameters["mapString"] as! String
+					self.appDelegate.currentStudent?.latitude = queryParameters["latitude"] as! Float
+					self.appDelegate.currentStudent?.longitude = queryParameters["longitude"] as! Float
+					
+					performUIUpdatesOnMain {
+						self.performSegueWithIdentifier("showMapSegue", sender: nil)
+					}
+				})
 				
-				performUIUpdatesOnMain {
-					let tabBarController = self.storyboard?.instantiateViewControllerWithIdentifier("TabBarController") as! UITabBarController
-					self.presentViewController(tabBarController, animated: true, completion: nil)
-				}
 			}
-			
-			task.resume()
 		}
 	}
 		
@@ -97,6 +98,16 @@ class AddStudentLocationViewController: UIViewController {
 		super.viewDidLoad()
 		
 		appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+		
+		loadingView = UIHelper.activityIndicatorViewLoadingView(self.view.center)
+		loadingView.hidden = true
+		
+		activityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+		activityIndicatorView.center = CGPointMake(loadingView.frame.size.width / 2, loadingView.frame.size.height / 2);
+		loadingView.addSubview(activityIndicatorView)
+		view.addSubview(loadingView!)
+		activityIndicatorView.hidesWhenStopped = true
+		activityIndicatorView.activityIndicatorViewStyle = .WhiteLarge
 		
 		locationTextField.contentVerticalAlignment = .Top
 		linkTextField.contentVerticalAlignment = .Center
@@ -116,6 +127,11 @@ class AddStudentLocationViewController: UIViewController {
 		locationTextField.delegate = self
 		linkTextField.delegate = self
 		
+		let attributedLocationString = NSAttributedString(string: "Enter geographical location here!", attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
+		let attributedLinkTextString = NSAttributedString(string: "Enter url for location!", attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
+		
+		locationTextField.attributedPlaceholder = attributedLocationString
+		linkTextField.attributedPlaceholder = attributedLinkTextString
 	}
 	
 	override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -142,43 +158,62 @@ class AddStudentLocationViewController: UIViewController {
 	@IBAction func cancelLocationAdd(sender: AnyObject) {
 		if isMapVisible {
 			isMapVisible = !isMapVisible
-			
+			updateMapUI(isMapVisible)
+		} else {
+			self.performSegueWithIdentifier("showMapSegue", sender: nil)
+		}
+		
+	}
+	
+	func updateMapUI(isMapVisible:Bool) {
+		if isMapVisible {
+			topView.hidden = true
+			bottomView.hidden = true
+			btnAddLocation.hidden = false
+			cancelBarButton.tintColor  = UIColor.whiteColor()
+			locationTextField.hidden = true
+			navigationController?.navigationBar.barTintColor = UIColor(red: 27/255.0, green: 109/255.0, blue: 168/255.0, alpha: 0.5)
+		} else {
 			topView.hidden = false
 			bottomView.hidden = false
 			btnAddLocation.hidden = true
 			cancelBarButton.tintColor  = nil
 			locationTextField.hidden = false
 			navigationController?.navigationBar.barTintColor = nil
-		} else {
-			let tabBarController = storyboard?.instantiateViewControllerWithIdentifier("TabBarController") as! UITabBarController
-			presentViewController(tabBarController, animated: true, completion: nil)
 		}
-		
 	}
+	
 	@IBAction func submitLocation(sender: UIButton) {
 		guard let address = locationTextField.text where locationTextField.text != "" else {
 			userAlert("Location not found", message: "Please ensure you have entered a valid location!")
 			return
 		}
 		
-		isMapVisible = !isMapVisible
-		
-		topView.hidden = true
-		bottomView.hidden = true
-		btnAddLocation.hidden = false
-		cancelBarButton.tintColor  = UIColor.whiteColor()
-		locationTextField.hidden = true
-		navigationController?.navigationBar.barTintColor = UIColor(red: 27/255.0, green: 109/255.0, blue: 168/255.0, alpha: 0.5)
+		loadingView.hidden = false
+		activityIndicatorView.startAnimating()
+		UIApplication.sharedApplication().beginIgnoringInteractionEvents()
 		
 		let geoCoder = CLGeocoder()
 		geoCoder.geocodeAddressString(address) { (placemarks, error) -> Void in
 			guard error == nil else {
 				performUIUpdatesOnMain {
+					self.loadingView.hidden = true
+					if self.activityIndicatorView.isAnimating() {
+						self.activityIndicatorView.startAnimating()
+					}
+					if UIApplication.sharedApplication().isIgnoringInteractionEvents() {
+						UIApplication.sharedApplication().endIgnoringInteractionEvents()
+					}
+				
 					self.userAlert("Location not found", message: "Please ensure you have entered a valid location")
 				}
 				
 				return
 			}
+			
+			self.isMapVisible = !self.isMapVisible
+			self.updateMapUI(self.isMapVisible)
+			
 			
 			if let placemark = placemarks?.first {
 				let annotation = MKPlacemark(placemark: placemark)
@@ -193,12 +228,27 @@ class AddStudentLocationViewController: UIViewController {
 				
 				self.mapView.addAnnotation(annotation)
 				
+				performUIUpdatesOnMain {
+					self.loadingView.hidden = true
+					self.activityIndicatorView.stopAnimating()
+					if UIApplication.sharedApplication().isIgnoringInteractionEvents() {
+						UIApplication.sharedApplication().endIgnoringInteractionEvents()
+					}
+				}
+				
 			}
 		}
 	}
 }
 
 extension AddStudentLocationViewController : UITextFieldDelegate {
+	func textFieldDidBeginEditing(textField: UITextField) {
+		
+		if textField.attributedPlaceholder?.string == "Enter geographical location here!" || textField.attributedPlaceholder?.string == "Enter url for location!"{
+			textField.attributedPlaceholder = nil
+		}
+	}
+	
 	func textFieldShouldReturn(textField: UITextField) -> Bool {
 		textField.resignFirstResponder()
 		return true

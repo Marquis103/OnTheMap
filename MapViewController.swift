@@ -24,109 +24,105 @@ class MapViewController: UIViewController {
 	//MARK: Actions
 	
 	@IBAction func addStudentLocation(sender: UIBarButtonItem) {
+		if let _ = self.appDelegate.currentStudent?.objectId where self.appDelegate.currentStudent?.objectId != "" {
+			let alert = UIAlertController(title: "Confirm Location Add", message: "You have already posted a student location.  Would you like to overwrite your current location?", preferredStyle: .Alert)
+			let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+			let overwriteAction = UIAlertAction(title: "Overwrite", style: .Default, handler: { (action) -> Void in
+				performUIUpdatesOnMain {
+					self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
+				}
+			})
+			
+			alert.addAction(overwriteAction)
+			alert.addAction(cancelAction)
+
+			self.presentViewController(alert, animated: true, completion: nil)
+			
+			
+			return
+		}
+		
 		guard let uniqueId = appDelegate.uniqueId else {
 			userAlert("Add Location Error", message: "Unique Key not identified.  Please login again!")
 			return
 		}
 		
-		if let request = ParseHttpClient.sharedInstance.getStudentLocation(uniqueId) {
-			let task = appDelegate.sharedSession.dataTaskWithRequest(request) { data, response, error in
-				
-				let (parsedResult, error) = UIHelper.handleNSURLStudentLocationsResponse(data, response: response, error: error)
-				
-				guard (error == nil) else {
-					self.userAlert("Add Location Error", message: (error?.domain)!)
-					return
-					
-				}
-				
-				//are there any results
-				let results = parsedResult![ParseHttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]
-				guard results?.count > 0   else {
-					performUIUpdatesOnMain {
-						self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
-					}
-					
-					return
-				}
-				
-				//if the student object id --hasn't made a post is nil update it if a value exists
-				if self.appDelegate.student?.objectId == nil {
-					self.appDelegate.student?.objectId = results!.first!["objectId"] as? String
-					let data = NSKeyedArchiver.archivedDataWithRootObject(self.appDelegate.student!)
-					NSUserDefaults.standardUserDefaults().setObject(data, forKey: "student")
-				}
-				
-				let alert = UIAlertController(title: "Confirm Location Add", message: "You have already posted a student location.  Would you like to overwrite your current location?", preferredStyle: .Alert)
-				let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
-				let overwriteAction = UIAlertAction(title: "Overwrite", style: .Default, handler: { (action) -> Void in
-					performUIUpdatesOnMain {
-						self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
-					}
-				})
-				
-				alert.addAction(overwriteAction)
-				alert.addAction(cancelAction)
-				performUIUpdatesOnMain {
-					self.presentViewController(alert, animated: true, completion: nil)
-				}
+		
+		HttpClient.sharedInstance.getStudentLocation(nil, uniqueKey: uniqueId) { (result, error) -> Void in
+			guard error == nil else {
+				self.userAlert("Could Not Refresh", message: (error?.userInfo["NSLocalizedDescriptionKey"]!)! as! String)
+				return
 			}
 			
-			task.resume()
+			let results = result![HttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]
 			
+			guard results?.count > 0   else {
+				performUIUpdatesOnMain {
+					self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
+				}
+				
+				return
+			}
+			
+			//if the student object id --hasn't made a post is nil update it if a value exists
+			if self.appDelegate.currentStudent?.objectId == nil || self.appDelegate.currentStudent?.objectId == "" {
+				self.appDelegate.currentStudent?.objectId = (results!.first!["objectId"] as? String)!
+			}
+			
+			let alert = UIAlertController(title: "Confirm Location Add", message: "You have already posted a student location.  Would you like to overwrite your current location?", preferredStyle: .Alert)
+			let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+			let overwriteAction = UIAlertAction(title: "Overwrite", style: .Default, handler: { (action) -> Void in
+				performUIUpdatesOnMain {
+					self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
+				}
+			})
+			
+			alert.addAction(overwriteAction)
+			alert.addAction(cancelAction)
+			performUIUpdatesOnMain {
+				self.presentViewController(alert, animated: true, completion: nil)
+			}
 		}
-		
 	}
 	
 	
 	@IBAction func refreshStudentLocations(sender: UIBarButtonItem) {
-		guard let request = ParseHttpClient.sharedInstance.getStudentLocations(nil) else {
-			print("Unable to retrieve pin locations")
-			return
+		HttpClient.sharedInstance.getStudentLocations(nil) { (result, error) -> Void in
+			self.loadingView.hidden = false
+			self.activityIndicatorView.startAnimating()
+			UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+			
+			guard error == nil else {
+				self.userAlert("Could Not Refresh", message: (error?.userInfo["NSLocalizedDescriptionKey"]!)! as! String)
+				return
+			}
+			
+			if let result = result {
+				//clear current pins
+				self.appDelegate.students?.removeAll()
+				self.updateLocations(result)
+			} else {
+				self.appDelegate.students = nil
+			}
 		}
-		
-		loadingView.hidden = false
-		activityIndicatorView.startAnimating()
-		UIApplication.sharedApplication().beginIgnoringInteractionEvents()
-		
-		//clear current pins
-		appDelegate.locations?.removeAll()
-		
-		updateLocations(withRequest: request)
 	}
 	
 	@IBAction func logUserOut(sender: UIBarButtonItem) {
 		let loginViewController = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
-		self.appDelegate.locations?.removeAll()
+		self.appDelegate.students?.removeAll()
 		appDelegate.sessionId = nil
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
 		FBSDKAccessToken.setCurrentAccessToken(nil)
 		
-		if let request = UdacityHttpClient.sharedInstance.getLogoutSessionRequest() {
-			let task = appDelegate.sharedSession.dataTaskWithRequest(request) { data, response, error in
-				
-				let (parsedResult, error) = UIHelper.handleNSURLSessionLogoutResponse(data, response: response, error: error)
-				
-				guard (error == nil) else {
-					self.userAlert("Failed Query", message: (error?.domain)!)
-					return
-					
-				}
-				
-				//is the session token in the parsed results
-				guard let _ = parsedResult![UdacityHttpClient.Constants.UdacityResponseKeys.session]!![UdacityHttpClient.Constants.UdacityResponseKeys.session_id] as? String else {
-					self.userAlert("Login Unsuccessful", message: "Could not locate session id")
-					return
-				}
-				
-				performUIUpdatesOnMain {
-					self.presentViewController(loginViewController, animated: true, completion: nil)
-				}
+		HttpClient.sharedInstance.getUdacityLogoutSession(nil) { (result, error) -> Void in
+			guard error == nil else {
+				return
 			}
 			
-			task.resume()
-			
+			performUIUpdatesOnMain {
+				self.presentViewController(loginViewController, animated: true, completion: nil)
+			}
 		}
 	}
 	
@@ -142,36 +138,13 @@ class MapViewController: UIViewController {
 		}
 	}
 	
-	func updateLocations(withRequest request:NSURLRequest?) {
-		if let request = request {
-			let task = appDelegate.sharedSession.dataTaskWithRequest(request) { data, response, error in
-				
-				let (parsedResult, error) = UIHelper.handleNSURLStudentLocationsResponse(data, response: response, error: error)
-				
-				guard (error == nil) else {
-					self.userAlert("Failed Query", message: (error?.domain)!)
-					return
-					
-				}
-				
-				//are there any results
-				guard let results = parsedResult![ParseHttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]  else {
-					self.appDelegate.locations = nil
-					return
-				}
-				
-				NSUserDefaults.standardUserDefaults().setValue(results, forKey: "locations")
-				self.appDelegate.locations = results
-				performUIUpdatesOnMain {
-					self.dropPins()
-				}
-			}
-			
-			task.resume()
-		} else {
-			if let _ = appDelegate.locations {
-				dropPins()
-			}
+	func updateLocations(parsedResult:AnyObject) {
+		let results = parsedResult[HttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]
+		
+		appDelegate.students = Students(initWithStudentJsonData: results!).getStudents()
+		
+		performUIUpdatesOnMain {
+			self.dropPins()
 		}
 	}
 	
@@ -187,14 +160,10 @@ class MapViewController: UIViewController {
 			}
 		}
 		
-		if let locations = self.appDelegate.locations {
-			for (_, value) in locations.enumerate() {
-				let studentDict = value
-
-				let annotation = StudentAnnotation(title: (studentDict["firstName"] ?? "") as! String + " " + ((studentDict["lastName"] ?? "") as! String) , subtitle: (studentDict["mediaURL"] ?? "") as? String, url: (studentDict["mediaURL"] ?? "") as! String, coordinate: CLLocationCoordinate2D(latitude: (studentDict["latitude"]) as! CLLocationDegrees , longitude: (studentDict["longitude"]) as! CLLocationDegrees))
-		
+		if let students = self.appDelegate.students {
+			for student in students {
+				let annotation = StudentAnnotation(title: (student.firstName + " " + student.lastName) , subtitle: student.mediaURL, url: student.mediaURL, coordinate: CLLocationCoordinate2D(latitude: Double(student.latitude), longitude: Double(student.longitude)))
 				mapView.addAnnotation(annotation)
-				
 			}
 		}
 	}
@@ -230,7 +199,7 @@ class MapViewController: UIViewController {
 		
 		guard appDelegate.sessionId != nil else {
 			let loginViewController = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
-			self.appDelegate.locations?.removeAll()
+			self.appDelegate.students?.removeAll()
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
 			presentViewController(loginViewController, animated: true, completion: nil)
@@ -238,13 +207,28 @@ class MapViewController: UIViewController {
 			return
 		}
 		
-		guard let request = ParseHttpClient.sharedInstance.getStudentLocations(nil) else {
-			print("Unable to retrieve pin locations")
-			return
+		self.loadingView.hidden = true
+		self.activityIndicatorView.stopAnimating()
+		UIApplication.sharedApplication().endIgnoringInteractionEvents()
+		
+		HttpClient.sharedInstance.getStudentLocations(nil) { (result, error) -> Void in
+			if let result = result {
+				self.updateLocations(result)
+			} else {
+				self.appDelegate.students = nil
+				
+				performUIUpdatesOnMain {
+					if self.activityIndicatorView.isAnimating() {
+						self.loadingView.hidden = true
+						self.activityIndicatorView.stopAnimating()
+					}
+					
+					if UIApplication.sharedApplication().isIgnoringInteractionEvents() {
+						UIApplication.sharedApplication().endIgnoringInteractionEvents()
+					}
+				}
+			}
 		}
-		
-		updateLocations(withRequest: request)
-		
 	}
 }
 

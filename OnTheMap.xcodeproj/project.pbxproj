@@ -8,24 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		34761A1F6079407F49CB83F6 /* Pods_OnTheMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1200564DC42CCA22FF7617AC /* Pods_OnTheMap.framework */; };
+		F48B5C941C738FB600B64536 /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48B5C931C738FB600B64536 /* HttpClient.swift */; };
+		F48B5C961C74565A00B64536 /* Students.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48B5C951C74565A00B64536 /* Students.swift */; };
 		F4B626621C669AE400D1623C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B626611C669AE400D1623C /* AppDelegate.swift */; };
 		F4B626671C669AE400D1623C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F4B626651C669AE400D1623C /* Main.storyboard */; };
 		F4B626691C669AE400D1623C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4B626681C669AE400D1623C /* Assets.xcassets */; };
 		F4B6266C1C669AE400D1623C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F4B6266A1C669AE400D1623C /* LaunchScreen.storyboard */; };
 		F4B626771C66BE1400D1623C /* CAGradientLayer+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B626761C66BE1400D1623C /* CAGradientLayer+Convenience.swift */; };
 		F4B6267A1C670B8200D1623C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B626791C670B8200D1623C /* LoginViewController.swift */; };
-		F4D55DF61C69872C00C77560 /* UdacityHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DF51C69872C00C77560 /* UdacityHttpClient.swift */; };
 		F4D55DFA1C69974700C77560 /* GCDBlackbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DF91C69974700C77560 /* GCDBlackbox.swift */; };
 		F4D55DFC1C69B7D800C77560 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DFB1C69B7D800C77560 /* MapViewController.swift */; };
 		F4D55DFE1C69BDCB00C77560 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4D55DFD1C69BDCB00C77560 /* MapKit.framework */; };
 		F4D55E001C6A504200C77560 /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55DFF1C6A504200C77560 /* UIHelper.swift */; };
-		F4D55E021C6ADAF100C77560 /* ParseHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E011C6ADAF100C77560 /* ParseHttpClient.swift */; };
 		F4D55E051C6AF5A100C77560 /* StudentAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E041C6AF5A100C77560 /* StudentAnnotation.swift */; };
 		F4D55E091C6C323200C77560 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4D55E061C6C323200C77560 /* Roboto-Medium.ttf */; };
 		F4D55E0A1C6C323200C77560 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4D55E071C6C323200C77560 /* Roboto-Regular.ttf */; };
 		F4D55E0B1C6C323200C77560 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4D55E081C6C323200C77560 /* Roboto-Thin.ttf */; };
 		F4D55E0D1C6C3BD200C77560 /* AddStudentLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E0C1C6C3BD200C77560 /* AddStudentLocationViewController.swift */; };
-		F4D55E101C6EDD9B00C77560 /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E0F1C6EDD9B00C77560 /* Student.swift */; };
+		F4D55E101C6EDD9B00C77560 /* StudentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E0F1C6EDD9B00C77560 /* StudentInformation.swift */; };
 		F4D55E121C70EA9500C77560 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D55E111C70EA9500C77560 /* ListViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +33,8 @@
 		1200564DC42CCA22FF7617AC /* Pods_OnTheMap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OnTheMap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		806AD58332C2E8E7A2BD6C6D /* Pods-OnTheMap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OnTheMap.release.xcconfig"; path = "Pods/Target Support Files/Pods-OnTheMap/Pods-OnTheMap.release.xcconfig"; sourceTree = "<group>"; };
 		AC23CC4FFA245B9E07931896 /* Pods-OnTheMap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OnTheMap.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OnTheMap/Pods-OnTheMap.debug.xcconfig"; sourceTree = "<group>"; };
+		F48B5C931C738FB600B64536 /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
+		F48B5C951C74565A00B64536 /* Students.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Students.swift; sourceTree = "<group>"; };
 		F4B6265E1C669AE400D1623C /* OnTheMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnTheMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4B626611C669AE400D1623C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = OnTheMap/AppDelegate.swift; sourceTree = "<group>"; };
 		F4B626661C669AE400D1623C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -41,18 +43,16 @@
 		F4B6266D1C669AE400D1623C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = OnTheMap/Info.plist; sourceTree = "<group>"; };
 		F4B626761C66BE1400D1623C /* CAGradientLayer+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAGradientLayer+Convenience.swift"; sourceTree = "<group>"; };
 		F4B626791C670B8200D1623C /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		F4D55DF51C69872C00C77560 /* UdacityHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityHttpClient.swift; sourceTree = "<group>"; };
 		F4D55DF91C69974700C77560 /* GCDBlackbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDBlackbox.swift; sourceTree = "<group>"; };
 		F4D55DFB1C69B7D800C77560 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		F4D55DFD1C69BDCB00C77560 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		F4D55DFF1C6A504200C77560 /* UIHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
-		F4D55E011C6ADAF100C77560 /* ParseHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseHttpClient.swift; sourceTree = "<group>"; };
 		F4D55E041C6AF5A100C77560 /* StudentAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentAnnotation.swift; sourceTree = "<group>"; };
 		F4D55E061C6C323200C77560 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		F4D55E071C6C323200C77560 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		F4D55E081C6C323200C77560 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		F4D55E0C1C6C3BD200C77560 /* AddStudentLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddStudentLocationViewController.swift; sourceTree = "<group>"; };
-		F4D55E0F1C6EDD9B00C77560 /* Student.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
+		F4D55E0F1C6EDD9B00C77560 /* StudentInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentInformation.swift; sourceTree = "<group>"; };
 		F4D55E111C70EA9500C77560 /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -136,10 +136,9 @@
 			isa = PBXGroup;
 			children = (
 				F4B626761C66BE1400D1623C /* CAGradientLayer+Convenience.swift */,
-				F4D55DF51C69872C00C77560 /* UdacityHttpClient.swift */,
 				F4D55DF91C69974700C77560 /* GCDBlackbox.swift */,
 				F4D55DFF1C6A504200C77560 /* UIHelper.swift */,
-				F4D55E011C6ADAF100C77560 /* ParseHttpClient.swift */,
+				F48B5C931C738FB600B64536 /* HttpClient.swift */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -166,7 +165,8 @@
 		F4D55E0E1C6EDD8B00C77560 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				F4D55E0F1C6EDD9B00C77560 /* Student.swift */,
+				F4D55E0F1C6EDD9B00C77560 /* StudentInformation.swift */,
+				F48B5C951C74565A00B64536 /* Students.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -301,13 +301,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4D55DF61C69872C00C77560 /* UdacityHttpClient.swift in Sources */,
 				F4D55DFC1C69B7D800C77560 /* MapViewController.swift in Sources */,
 				F4D55E121C70EA9500C77560 /* ListViewController.swift in Sources */,
-				F4D55E021C6ADAF100C77560 /* ParseHttpClient.swift in Sources */,
-				F4D55E101C6EDD9B00C77560 /* Student.swift in Sources */,
+				F48B5C961C74565A00B64536 /* Students.swift in Sources */,
+				F4D55E101C6EDD9B00C77560 /* StudentInformation.swift in Sources */,
 				F4B6267A1C670B8200D1623C /* LoginViewController.swift in Sources */,
 				F4D55DFA1C69974700C77560 /* GCDBlackbox.swift in Sources */,
+				F48B5C941C738FB600B64536 /* HttpClient.swift in Sources */,
 				F4D55E0D1C6C3BD200C77560 /* AddStudentLocationViewController.swift in Sources */,
 				F4D55E051C6AF5A100C77560 /* StudentAnnotation.swift in Sources */,
 				F4B626621C669AE400D1623C /* AppDelegate.swift in Sources */,

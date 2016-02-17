@@ -259,16 +259,23 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="pMh-0l-sqt">
-                        <barButtonItem key="leftBarButtonItem" image="pin_icon" id="9Hi-kM-dRx">
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="9Hi-kM-dRx">
                             <connections>
-                                <action selector="addNewLocation:" destination="d5U-CK-uBb" id="IDw-HP-caa"/>
+                                <action selector="logUserOut:" destination="d5U-CK-uBb" id="Y1H-JD-HrQ"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="VTN-KQ-Yj7">
-                            <connections>
-                                <action selector="refreshLocations:" destination="d5U-CK-uBb" id="x6e-Yb-F8b"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="refresh" id="VTN-KQ-Yj7">
+                                <connections>
+                                    <action selector="refreshLocations:" destination="d5U-CK-uBb" id="x6e-Yb-F8b"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="pin_icon" id="kym-t1-NHz">
+                                <connections>
+                                    <action selector="addNewLocation:" destination="d5U-CK-uBb" id="fBQ-JI-vfa"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="zmm-K0-E0y" id="GEp-Vi-I50"/>
@@ -329,7 +336,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4VB-1O-UB0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3761" y="843"/>
+            <point key="canvasLocation" x="3753" y="441"/>
         </scene>
         <!--Add Student Location View Controller-->
         <scene sceneID="18t-M4-gXx">
@@ -343,10 +350,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="S7L-FJ-YQL">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="S7L-FJ-YQL">
                                 <rect key="frame" x="0.0" y="236" width="600" height="364"/>
                             </mapView>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="752" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="h6w-0E-JSy" userLabel="LinkTextField">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="752" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="h6w-0E-JSy" userLabel="LinkTextField">
                                 <rect key="frame" x="0.0" y="64" width="600" height="172"/>
                                 <color key="backgroundColor" red="0.19283535960000001" green="0.49735749489999997" blue="0.69454536649999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -388,7 +395,7 @@
                                     <constraint firstItem="3Qg-ik-XVP" firstAttribute="centerX" secondItem="hJp-OA-QDZ" secondAttribute="centerX" id="uJY-B3-y7t"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bgx-WV-its">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bgx-WV-its">
                                 <rect key="frame" x="0.0" y="64" width="600" height="128.5"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="V16-9O-aiV">
@@ -422,7 +429,7 @@
                                     <constraint firstItem="V16-9O-aiV" firstAttribute="centerX" secondItem="Bgx-WV-its" secondAttribute="centerX" id="4lk-wu-nzu"/>
                                 </constraints>
                             </view>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="700" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rUL-rD-ufp">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="700" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rUL-rD-ufp">
                                 <rect key="frame" x="0.0" y="192.5" width="600" height="332.5"/>
                                 <color key="backgroundColor" red="0.15686274509803921" green="0.41960784313725491" blue="0.63529411764705879" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -477,11 +484,12 @@
                         <outlet property="locationTextField" destination="rUL-rD-ufp" id="Olh-F4-uun"/>
                         <outlet property="mapView" destination="S7L-FJ-YQL" id="R71-4a-qfb"/>
                         <outlet property="topView" destination="Bgx-WV-its" id="B5J-XT-0Qm"/>
+                        <segue destination="3Q5-Tm-TsR" kind="presentation" identifier="showMapSegue" id="xgh-0U-2jO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lmg-3E-fa4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5479" y="815"/>
+            <point key="canvasLocation" x="4787" y="553"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="KTC-aE-Pgx">
@@ -536,7 +544,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fqw-xO-xpR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4667" y="815"/>
+            <point key="canvasLocation" x="4157" y="1566"/>
         </scene>
         <!--List-->
         <scene sceneID="R5S-pt-Pm4">
@@ -565,6 +573,7 @@
         <image name="pin_icon" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="suh-7M-I0a"/>
+        <segue reference="xgh-0U-2jO"/>
+        <segue reference="F2q-2H-sKU"/>
     </inferredMetricsTieBreakers>
 </document>
