@@ -7,6 +7,6 @@ target 'OnTheMap' do
 
 pod 'FBSDKCoreKit', '~> 4.8'
 pod 'FBSDKLoginKit', '~> 4.8'
-
+pod 'ReachabilitySwift', :git => 'https://github.com/ashleymills/Reachability.swift'
 end
 

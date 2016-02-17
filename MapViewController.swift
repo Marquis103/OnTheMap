@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import FBSDKLoginKit
+import ReachabilitySwift
 
 class MapViewController: UIViewController {
 	
@@ -16,7 +17,7 @@ class MapViewController: UIViewController {
 	//var locations: [[String:AnyObject]]?
 	var activityIndicatorView:UIActivityIndicatorView!
 	var loadingView:UIView!
-	
+	var reachability:Reachability?
 	weak var appDelegate: AppDelegate!
 	
 	@IBOutlet weak var mapView: MKMapView!
@@ -24,69 +25,81 @@ class MapViewController: UIViewController {
 	//MARK: Actions
 	
 	@IBAction func addStudentLocation(sender: UIBarButtonItem) {
-		if let _ = self.appDelegate.currentStudent?.objectId where self.appDelegate.currentStudent?.objectId != "" {
-			let alert = UIAlertController(title: "Confirm Location Add", message: "You have already posted a student location.  Would you like to overwrite your current location?", preferredStyle: .Alert)
-			let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
-			let overwriteAction = UIAlertAction(title: "Overwrite", style: .Default, handler: { (action) -> Void in
-				performUIUpdatesOnMain {
-					self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
-				}
-			})
-			
-			alert.addAction(overwriteAction)
-			alert.addAction(cancelAction)
-
-			self.presentViewController(alert, animated: true, completion: nil)
-			
-			
+		if reachability!.isReachable() == false {
+			userAlert("Unable to Add Location", message: "Unable to connect to the Internet")
 			return
 		}
-		
-		guard let uniqueId = appDelegate.uniqueId else {
-			userAlert("Add Location Error", message: "Unique Key not identified.  Please login again!")
-			return
-		}
-		
-		
-		HttpClient.sharedInstance.getStudentLocation(nil, uniqueKey: uniqueId) { (result, error) -> Void in
-			guard error == nil else {
-				self.userAlert("Could Not Refresh", message: (error?.userInfo["NSLocalizedDescriptionKey"]!)! as! String)
-				return
-			}
-			
-			let results = result![HttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]
-			
-			guard results?.count > 0   else {
-				performUIUpdatesOnMain {
-					self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
-				}
+		else {
+			if let _ = self.appDelegate.currentStudent?.objectId where self.appDelegate.currentStudent?.objectId != "" {
+				let alert = UIAlertController(title: "Confirm Location Add", message: "You have already posted a student location.  Would you like to overwrite your current location?", preferredStyle: .Alert)
+				let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+				let overwriteAction = UIAlertAction(title: "Overwrite", style: .Default, handler: { (action) -> Void in
+					performUIUpdatesOnMain {
+						self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
+					}
+				})
+				
+				alert.addAction(overwriteAction)
+				alert.addAction(cancelAction)
+				
+				self.presentViewController(alert, animated: true, completion: nil)
+				
 				
 				return
 			}
 			
-			//if the student object id --hasn't made a post is nil update it if a value exists
-			if self.appDelegate.currentStudent?.objectId == nil || self.appDelegate.currentStudent?.objectId == "" {
-				self.appDelegate.currentStudent?.objectId = (results!.first!["objectId"] as? String)!
+			guard let uniqueId = appDelegate.uniqueId else {
+				userAlert("Add Location Error", message: "Unique Key not identified.  Please login again!")
+				return
 			}
 			
-			let alert = UIAlertController(title: "Confirm Location Add", message: "You have already posted a student location.  Would you like to overwrite your current location?", preferredStyle: .Alert)
-			let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
-			let overwriteAction = UIAlertAction(title: "Overwrite", style: .Default, handler: { (action) -> Void in
-				performUIUpdatesOnMain {
-					self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
-				}
-			})
 			
-			alert.addAction(overwriteAction)
-			alert.addAction(cancelAction)
-			performUIUpdatesOnMain {
-				self.presentViewController(alert, animated: true, completion: nil)
+			HttpClient.sharedInstance.getStudentLocation(nil, uniqueKey: uniqueId) { (result, error) -> Void in
+				guard error == nil else {
+					self.userAlert("Could Not Refresh", message: (error?.userInfo["NSLocalizedDescriptionKey"]!)! as! String)
+					return
+				}
+				
+				let results = result![HttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]
+				
+				guard results?.count > 0   else {
+					performUIUpdatesOnMain {
+						self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
+					}
+					
+					return
+				}
+				
+				//if the student object id --hasn't made a post is nil update it if a value exists
+				if self.appDelegate.currentStudent?.objectId == nil || self.appDelegate.currentStudent?.objectId == "" {
+					self.appDelegate.currentStudent?.objectId = (results!.first!["objectId"] as? String)!
+				}
+				
+				let alert = UIAlertController(title: "Confirm Location Add", message: "You have already posted a student location.  Would you like to overwrite your current location?", preferredStyle: .Alert)
+				let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+				let overwriteAction = UIAlertAction(title: "Overwrite", style: .Default, handler: { (action) -> Void in
+					performUIUpdatesOnMain {
+						self.performSegueWithIdentifier("addStudentLocationSegue", sender: nil)
+					}
+				})
+				
+				alert.addAction(overwriteAction)
+				alert.addAction(cancelAction)
+				performUIUpdatesOnMain {
+					self.presentViewController(alert, animated: true, completion: nil)
+					
+				}
 			}
 		}
 	}
 	
 	
 	@IBAction func refreshStudentLocations(sender: UIBarButtonItem) {
+		if reachability!.isReachable() == false {
+			userAlert("Refresh Failed", message: "Internet connection available to refresh")
+			return
+		}
+		
 		HttpClient.sharedInstance.getStudentLocations(nil) { (result, error) -> Void in
 			self.loadingView.hidden = false
 			self.activityIndicatorView.startAnimating()
@@ -109,23 +122,62 @@ class MapViewController: UIViewController {
 	
 	@IBAction func logUserOut(sender: UIBarButtonItem) {
 		let loginViewController = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
-		self.appDelegate.students?.removeAll()
+		self.appDelegate.students = nil
 		appDelegate.sessionId = nil
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
+		NSUserDefaults.standardUserDefaults().removeObjectForKey("uniqueId")
+		
 		FBSDKAccessToken.setCurrentAccessToken(nil)
 		
-		HttpClient.sharedInstance.getUdacityLogoutSession(nil) { (result, error) -> Void in
-			guard error == nil else {
-				return
+		presentViewController(loginViewController, animated: true, completion: nil)
+	}
+	
+	func addReachability() {
+		do {
+			reachability = try Reachability.reachabilityForInternetConnection()
+		} catch {
+			print("Unable to create Reachability")
+			return
+		}
+		
+		reachability!.whenReachable = { reachability in
+			performUIUpdatesOnMain {
+				self.loadingView.hidden = true
+				self.activityIndicatorView.stopAnimating()
+				UIApplication.sharedApplication().endIgnoringInteractionEvents()
 			}
 			
-			performUIUpdatesOnMain {
-				self.presentViewController(loginViewController, animated: true, completion: nil)
+			HttpClient.sharedInstance.getStudentLocations(nil) { (result, error) -> Void in
+				if let result = result {
+					self.updateLocations(result)
+				} else {
+					self.appDelegate.students = nil
+					
+					performUIUpdatesOnMain {
+						if self.activityIndicatorView.isAnimating() {
+							self.loadingView.hidden = true
+							self.activityIndicatorView.stopAnimating()
+						}
+						
+						if UIApplication.sharedApplication().isIgnoringInteractionEvents() {
+							UIApplication.sharedApplication().endIgnoringInteractionEvents()
+						}
+					}
+				}
 			}
+		}
+		
+		do {
+			try reachability!.startNotifier()
+		} catch {
+			print("Can't start reachability notifier")
 		}
 	}
 	
+	deinit {
+		reachability?.stopNotifier()
+	}
 	
 	//MARK: Functions
 	func userAlert(title:String, message: String) {
@@ -138,10 +190,12 @@ class MapViewController: UIViewController {
 		}
 	}
 	
-	func updateLocations(parsedResult:AnyObject) {
-		let results = parsedResult[HttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]
-		
-		appDelegate.students = Students(initWithStudentJsonData: results!).getStudents()
+	func updateLocations(parsedResult:AnyObject?) {
+		if let _ = parsedResult {
+			let results = parsedResult![HttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]
+			
+			appDelegate.students = Students(initWithStudentJsonData: results!).getStudents()
+		}
 		
 		performUIUpdatesOnMain {
 			self.dropPins()
@@ -192,6 +246,8 @@ class MapViewController: UIViewController {
 		}
 		
 		mapView.delegate = self
+		
+		addReachability()
 	}
 	
 	override func viewWillAppear(animated: Bool) {
@@ -203,6 +259,15 @@ class MapViewController: UIViewController {
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
 			presentViewController(loginViewController, animated: true, completion: nil)
+			
+			return
+		}
+		
+		if reachability!.isReachable() == false {
+			if let _ = self.appDelegate.students {
+				updateLocations(nil)
+				return
+			}
 			
 			return
 		}
@@ -226,9 +291,11 @@ class MapViewController: UIViewController {
 					if UIApplication.sharedApplication().isIgnoringInteractionEvents() {
 						UIApplication.sharedApplication().endIgnoringInteractionEvents()
 					}
+					
 				}
 			}
 		}
+		
 	}
 }
 

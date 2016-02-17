@@ -8,6 +8,7 @@
 
 import UIKit
 import FBSDKLoginKit
+import ReachabilitySwift
 
 class ListViewController: UIViewController {
 
@@ -15,6 +16,7 @@ class ListViewController: UIViewController {
 	weak var appDelegate:AppDelegate!
 	var activityIndicatorView:UIActivityIndicatorView!
 	var loadingView:UIView!
+	var reachability:Reachability?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -33,6 +35,8 @@ class ListViewController: UIViewController {
 		view.addSubview(loadingView!)
 		activityIndicatorView.hidesWhenStopped = true
 		activityIndicatorView.activityIndicatorViewStyle = .WhiteLarge
+		
+		addReachability()
 	}
 	
 	override func viewWillAppear(animated: Bool) {
@@ -42,6 +46,15 @@ class ListViewController: UIViewController {
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
 			presentViewController(loginViewController, animated: true, completion: nil)
+			
+			return
+		}
+		
+		if reachability!.isReachable() == false {
+			if let _ = self.appDelegate.students {
+				updateLocations(nil)
+				return
+			}
 			
 			return
 		}
@@ -59,6 +72,11 @@ class ListViewController: UIViewController {
 	}
 	
 	@IBAction func refreshLocations(sender: UIBarButtonItem) {
+		if reachability!.isReachable() == false {
+			userAlert("Refresh Failed", message: "Internet connection available to refresh")
+			return
+		}
+		
 		var parameters = [String:AnyObject]()
 		parameters["order"] = "-updatedAt"
 		
@@ -89,6 +107,8 @@ class ListViewController: UIViewController {
 		appDelegate.sessionId = nil
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
+		NSUserDefaults.standardUserDefaults().removeObjectForKey("uniqueId")
+		
 		FBSDKAccessToken.setCurrentAccessToken(nil)
 		
 		HttpClient.sharedInstance.getUdacityLogoutSession(nil) { (result, error) -> Void in
@@ -164,6 +184,52 @@ class ListViewController: UIViewController {
 		}
 	}
 	
+	func addReachability() {
+		do {
+			reachability = try Reachability.reachabilityForInternetConnection()
+		} catch {
+			print("Unable to create Reachability")
+			return
+		}
+		
+		reachability!.whenReachable = { reachability in
+			performUIUpdatesOnMain {
+				self.loadingView.hidden = true
+				self.activityIndicatorView.stopAnimating()
+				UIApplication.sharedApplication().endIgnoringInteractionEvents()
+			}
+			
+			HttpClient.sharedInstance.getStudentLocations(nil) { (result, error) -> Void in
+				if let result = result {
+					self.updateLocations(result)
+				} else {
+					self.appDelegate.students = nil
+					
+					performUIUpdatesOnMain {
+						if self.activityIndicatorView.isAnimating() {
+							self.loadingView.hidden = true
+							self.activityIndicatorView.stopAnimating()
+						}
+						
+						if UIApplication.sharedApplication().isIgnoringInteractionEvents() {
+							UIApplication.sharedApplication().endIgnoringInteractionEvents()
+						}
+					}
+				}
+			}
+		}
+		
+		do {
+			try reachability!.startNotifier()
+		} catch {
+			print("Can't start reachability notifier")
+		}
+	}
+	
+	deinit {
+		reachability!.stopNotifier()
+	}
+	
 	func userAlert(title:String, message: String) {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
 		let alertAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
@@ -174,12 +240,14 @@ class ListViewController: UIViewController {
 		}
 	}
 	
-	func updateLocations(parsedResult:AnyObject) {
-		let results = parsedResult[HttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]
-		
-		NSUserDefaults.standardUserDefaults().setValue(results, forKey: "locations")
-		
-		appDelegate.students = Students(initWithStudentJsonData: results!).getStudents()
+	func updateLocations(parsedResult:AnyObject?) {
+		if let _ = parsedResult {
+			let results = parsedResult! [HttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]
+			
+			NSUserDefaults.standardUserDefaults().setValue(results, forKey: "locations")
+			
+			appDelegate.students = Students(initWithStudentJsonData: results!).getStudents()
+		}
 		
 		performUIUpdatesOnMain {
 			if self.activityIndicatorView.isAnimating() {

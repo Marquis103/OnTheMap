@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import ReachabilitySwift
 
 class AddStudentLocationViewController: UIViewController {
 	
@@ -26,9 +27,25 @@ class AddStudentLocationViewController: UIViewController {
 	var loadingView:UIView!
 	private var buttonWidth:CGFloat!
 	var locationRequest:NSURLRequest?
+	var reachability:Reachability?
 	
 	//MARK: Functions
 	func postStudentLocation() {
+		if reachability!.isReachable() {
+			if reachability!.isReachableViaWiFi() == false && reachability!.isReachableViaWWAN() == false {
+				self.userAlert("Connection Unavailable", message: "Unable to add student location!")
+				return
+			}
+		} else {
+			self.userAlert("Connection Unavailable", message: "Unable to add student location")
+			return
+		}
+		
+		guard let _ = linkTextField.text where linkTextField.text != "" else {
+			userAlert("Enter URL", message: "Please ensure you have entered a valid URL!")
+			return
+		}
+		
 		if let annotation = mapView.annotations.first, student = appDelegate.currentStudent {
 			
 			var queryParameters = [String:AnyObject]()
@@ -91,7 +108,25 @@ class AddStudentLocationViewController: UIViewController {
 			}
 		}
 	}
+	
+	func addReachability() {
+		do {
+			reachability = try Reachability.reachabilityForInternetConnection()
+		} catch {
+			print("Unable to create Reachability")
+			return
+		}
 		
+		do {
+			try reachability!.startNotifier()
+		} catch {
+			print("Can't start reachability notifier")
+		}
+	}
+	
+	deinit {
+		reachability?.stopNotifier()
+	}
 	
 	//MARK: Lifecycle Methods
 	override func viewDidLoad() {
@@ -132,6 +167,8 @@ class AddStudentLocationViewController: UIViewController {
 		
 		locationTextField.attributedPlaceholder = attributedLocationString
 		linkTextField.attributedPlaceholder = attributedLinkTextString
+		
+		addReachability()
 	}
 	
 	override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -184,6 +221,16 @@ class AddStudentLocationViewController: UIViewController {
 	}
 	
 	@IBAction func submitLocation(sender: UIButton) {
+		if reachability!.isReachable() {
+			if reachability!.isReachableViaWiFi() == false && reachability!.isReachableViaWWAN() == false {
+				self.userAlert("Connection Unavailable", message: "Unable to find location!")
+				return
+			}
+		} else {
+			self.userAlert("Connection Unavailable", message: "Unable to find location!")
+			return
+		}
+		
 		guard let address = locationTextField.text where locationTextField.text != "" else {
 			userAlert("Location not found", message: "Please ensure you have entered a valid location!")
 			return

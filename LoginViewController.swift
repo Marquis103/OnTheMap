@@ -8,6 +8,7 @@
 
 import UIKit
 import FBSDKLoginKit
+import ReachabilitySwift
 
 class LoginViewController: UIViewController {
 
@@ -18,6 +19,7 @@ class LoginViewController: UIViewController {
 	var loadingView:UIView!
 	var fbLoginButton = FBSDKLoginButton()
 	var buttonWidth: CGFloat!
+	var reachability:Reachability?
 	
 	@IBOutlet weak var scrollView: UIScrollView!
 	
@@ -126,6 +128,34 @@ class LoginViewController: UIViewController {
 		scrollView.scrollIndicatorInsets = contentInsets
 	}
 	
+	func addReachability() {
+		do {
+			reachability = try Reachability.reachabilityForInternetConnection()
+		} catch {
+			print("Unable to create Reachability")
+			return
+		}
+		
+		reachability!.whenUnreachable = {
+			reachability in
+			
+			dispatch_async(dispatch_get_main_queue(), {
+				self.userAlert("Network Unavailable", message: "Internet connection not available to login!")
+				return
+			})
+		}
+
+		do {
+			try reachability!.startNotifier()
+		} catch {
+			print("Can't start reachability notifier")
+		}
+	}
+	
+	deinit {
+		reachability?.stopNotifier()
+	}
+	
 	//MARK: View Controller functions
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
@@ -191,6 +221,7 @@ class LoginViewController: UIViewController {
 		//view.addSubview(scrollView)
 		setUpTextFields()
 		
+		addReachability()
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
@@ -201,6 +232,16 @@ class LoginViewController: UIViewController {
 	
 	//MARK: Actions
 	@IBAction func loginUser(sender: UIButton) {
+		if reachability!.isReachable() {
+			if reachability!.isReachableViaWiFi() == false && reachability!.isReachableViaWWAN() == false {
+				self.userAlert("Connection Unavailable", message: "Unable to login users")
+				return
+			}
+		} else {
+			self.userAlert("Connection Unavailable", message: "Unable to login users")
+			return
+		}
+		
 		loadingView.hidden = false
 		activityIndicatorView.startAnimating()
 		UIApplication.sharedApplication().beginIgnoringInteractionEvents()
