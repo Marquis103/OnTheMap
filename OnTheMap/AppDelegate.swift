@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 	var sessionId: String?
 	var uniqueId:String?
-	var students:[StudentInformation]?
 	var currentStudent:StudentInformation?
 	
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {

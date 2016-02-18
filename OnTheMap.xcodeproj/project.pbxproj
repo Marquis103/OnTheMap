@@ -10,6 +10,7 @@
 		34761A1F6079407F49CB83F6 /* Pods_OnTheMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1200564DC42CCA22FF7617AC /* Pods_OnTheMap.framework */; };
 		F48B5C941C738FB600B64536 /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48B5C931C738FB600B64536 /* HttpClient.swift */; };
 		F48B5C961C74565A00B64536 /* Students.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48B5C951C74565A00B64536 /* Students.swift */; };
+		F4B117581C75813300839896 /* StudentTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B117571C75813300839896 /* StudentTabBarController.swift */; };
 		F4B626621C669AE400D1623C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B626611C669AE400D1623C /* AppDelegate.swift */; };
 		F4B626671C669AE400D1623C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F4B626651C669AE400D1623C /* Main.storyboard */; };
 		F4B626691C669AE400D1623C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4B626681C669AE400D1623C /* Assets.xcassets */; };
@@ -35,6 +36,7 @@
 		AC23CC4FFA245B9E07931896 /* Pods-OnTheMap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OnTheMap.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OnTheMap/Pods-OnTheMap.debug.xcconfig"; sourceTree = "<group>"; };
 		F48B5C931C738FB600B64536 /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		F48B5C951C74565A00B64536 /* Students.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Students.swift; sourceTree = "<group>"; };
+		F4B117571C75813300839896 /* StudentTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentTabBarController.swift; sourceTree = "<group>"; };
 		F4B6265E1C669AE400D1623C /* OnTheMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnTheMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4B626611C669AE400D1623C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = OnTheMap/AppDelegate.swift; sourceTree = "<group>"; };
 		F4B626661C669AE400D1623C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				F4D55DFB1C69B7D800C77560 /* MapViewController.swift */,
 				F4D55E0C1C6C3BD200C77560 /* AddStudentLocationViewController.swift */,
 				F4D55E111C70EA9500C77560 /* ListViewController.swift */,
+				F4B117571C75813300839896 /* StudentTabBarController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -313,6 +316,7 @@
 				F4B626621C669AE400D1623C /* AppDelegate.swift in Sources */,
 				F4B626771C66BE1400D1623C /* CAGradientLayer+Convenience.swift in Sources */,
 				F4D55E001C6A504200C77560 /* UIHelper.swift in Sources */,
+				F4B117581C75813300839896 /* StudentTabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -17,6 +17,7 @@ class ListViewController: UIViewController {
 	var activityIndicatorView:UIActivityIndicatorView!
 	var loadingView:UIView!
 	var reachability:Reachability?
+	var studentTabBar:StudentTabBarController!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -37,12 +38,14 @@ class ListViewController: UIViewController {
 		activityIndicatorView.activityIndicatorViewStyle = .WhiteLarge
 		
 		addReachability()
+		
+		studentTabBar = tabBarController as! StudentTabBarController
 	}
 	
 	override func viewWillAppear(animated: Bool) {
 		guard appDelegate.sessionId != nil else {
 			let loginViewController = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
-			self.appDelegate.students?.removeAll()
+			studentTabBar.students.removeAllStudents()
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
 			presentViewController(loginViewController, animated: true, completion: nil)
@@ -51,7 +54,7 @@ class ListViewController: UIViewController {
 		}
 		
 		if reachability!.isReachable() == false {
-			if let _ = self.appDelegate.students {
+			if studentTabBar.students.getStudentCount()  > 0 {
 				updateLocations(nil)
 				return
 			}
@@ -66,7 +69,7 @@ class ListViewController: UIViewController {
 			if let result = result {
 				self.updateLocations(result)
 			} else {
-				self.appDelegate.students = nil
+				self.studentTabBar.students.removeAllStudents()
 			}
 		}
 	}
@@ -92,10 +95,10 @@ class ListViewController: UIViewController {
 			
 			if let result = result {
 				//clear current pins
-				self.appDelegate.students?.removeAll()
+				self.studentTabBar.students.removeAllStudents()
 				self.updateLocations(result)
 			} else {
-				self.appDelegate.students = nil
+				self.studentTabBar.students.removeAllStudents()
 			}
 		}
 	}
@@ -103,7 +106,7 @@ class ListViewController: UIViewController {
 	
 	@IBAction func logUserOut(sender: UIBarButtonItem) {
 		let loginViewController = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
-		self.appDelegate.students?.removeAll()
+		self.studentTabBar.students.removeAllStudents()
 		appDelegate.sessionId = nil
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
@@ -203,7 +206,7 @@ class ListViewController: UIViewController {
 				if let result = result {
 					self.updateLocations(result)
 				} else {
-					self.appDelegate.students = nil
+					self.studentTabBar.students.removeAllStudents()
 					
 					performUIUpdatesOnMain {
 						if self.activityIndicatorView.isAnimating() {
@@ -246,7 +249,7 @@ class ListViewController: UIViewController {
 			
 			NSUserDefaults.standardUserDefaults().setValue(results, forKey: "locations")
 			
-			appDelegate.students = Students(initWithStudentJsonData: results!).getStudents()
+			studentTabBar.students.addStudents(withJsonData: results!)
 		}
 		
 		performUIUpdatesOnMain {
@@ -266,8 +269,8 @@ class ListViewController: UIViewController {
 
 extension ListViewController : UITableViewDelegate {
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		if let students = self.appDelegate.students {
-			let student = students[indexPath.row]
+		if studentTabBar.students.getStudentCount() > 0 {
+			let student = studentTabBar.students.getStudents()[indexPath.row]
 			let url = NSURL(string: student.mediaURL)!
 			if !UIApplication.sharedApplication().canOpenURL(url) && (!url.absoluteString.hasPrefix("http://") || !url.absoluteString.hasPrefix("https://")) {
 				let urlString = "http://" + url.absoluteString
@@ -283,8 +286,8 @@ extension ListViewController : UITableViewDataSource {
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier("locationsViewCell", forIndexPath: indexPath) as UITableViewCell
 		
-		if let students = self.appDelegate.students {
-			let student = students[indexPath.row]
+		if studentTabBar.students.getStudentCount() > 0 {
+			let student = studentTabBar.students.getStudents()[indexPath.row]
 			
 			cell.imageView?.image = UIImage(named: "pin_icon")
 			cell.textLabel?.text = student.firstName + " " + student.lastName
@@ -295,8 +298,8 @@ extension ListViewController : UITableViewDataSource {
 	}
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if let students = appDelegate.students {
-			return students.count
+		if studentTabBar.students.getStudentCount() > 0 {
+			return studentTabBar.students.getStudentCount()
 		} else {
 			return 0
 		}

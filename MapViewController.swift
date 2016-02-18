@@ -19,6 +19,7 @@ class MapViewController: UIViewController {
 	var loadingView:UIView!
 	var reachability:Reachability?
 	weak var appDelegate: AppDelegate!
+	var studentTabBar:StudentTabBarController!
 	
 	@IBOutlet weak var mapView: MKMapView!
 	
@@ -112,17 +113,17 @@ class MapViewController: UIViewController {
 			
 			if let result = result {
 				//clear current pins
-				self.appDelegate.students?.removeAll()
+				self.studentTabBar!.students.removeAllStudents()
 				self.updateLocations(result)
 			} else {
-				self.appDelegate.students = nil
+				self.studentTabBar.students.removeAllStudents()
 			}
 		}
 	}
 	
 	@IBAction func logUserOut(sender: UIBarButtonItem) {
 		let loginViewController = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
-		self.appDelegate.students = nil
+		
 		appDelegate.sessionId = nil
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 		NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
@@ -152,7 +153,7 @@ class MapViewController: UIViewController {
 				if let result = result {
 					self.updateLocations(result)
 				} else {
-					self.appDelegate.students = nil
+					self.studentTabBar.students.removeAllStudents()
 					
 					performUIUpdatesOnMain {
 						if self.activityIndicatorView.isAnimating() {
@@ -194,7 +195,7 @@ class MapViewController: UIViewController {
 		if let _ = parsedResult {
 			let results = parsedResult![HttpClient.Constants.ParseResponseKeys.results] as? [[String:AnyObject]]
 			
-			appDelegate.students = Students(initWithStudentJsonData: results!).getStudents()
+			studentTabBar.students.addStudents(withJsonData: results!)
 		}
 		
 		performUIUpdatesOnMain {
@@ -214,11 +215,10 @@ class MapViewController: UIViewController {
 			}
 		}
 		
-		if let students = self.appDelegate.students {
-			for student in students {
-				let annotation = StudentAnnotation(title: (student.firstName + " " + student.lastName) , subtitle: student.mediaURL, url: student.mediaURL, coordinate: CLLocationCoordinate2D(latitude: Double(student.latitude), longitude: Double(student.longitude)))
-				mapView.addAnnotation(annotation)
-			}
+		
+		for student in studentTabBar.students.getStudents() {
+			let annotation = StudentAnnotation(title: (student.firstName + " " + student.lastName) , subtitle: student.mediaURL, url: student.mediaURL, coordinate: CLLocationCoordinate2D(latitude: Double(student.latitude), longitude: Double(student.longitude)))
+			mapView.addAnnotation(annotation)
 		}
 	}
 	
@@ -247,6 +247,8 @@ class MapViewController: UIViewController {
 		
 		mapView.delegate = self
 		
+		studentTabBar = tabBarController as! StudentTabBarController
+		
 		addReachability()
 	}
 	
@@ -255,7 +257,7 @@ class MapViewController: UIViewController {
 		
 		guard appDelegate.sessionId != nil else {
 			let loginViewController = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
-			self.appDelegate.students?.removeAll()
+			studentTabBar.students.removeAllStudents()
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("locations")
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("sessionId")
 			presentViewController(loginViewController, animated: true, completion: nil)
@@ -264,7 +266,7 @@ class MapViewController: UIViewController {
 		}
 		
 		if reachability!.isReachable() == false {
-			if let _ = self.appDelegate.students {
+			if studentTabBar.students.getStudentCount() > 0 {
 				updateLocations(nil)
 				return
 			}
@@ -280,7 +282,7 @@ class MapViewController: UIViewController {
 			if let result = result {
 				self.updateLocations(result)
 			} else {
-				self.appDelegate.students = nil
+				self.studentTabBar.students.removeAllStudents()
 				
 				performUIUpdatesOnMain {
 					if self.activityIndicatorView.isAnimating() {
