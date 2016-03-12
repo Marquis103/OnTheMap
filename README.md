@@ -1,18 +1,13 @@
 # OnTheMap
-iOS app the allows Udacity class members to post interests from a location on a map as a link annotated pin and view interests of all users
+iOS app that allows Udacity class members to collaborate by dropping a pin on a map attaching a URL link of current interest inside of the map pin annotation.
 
 ### Setup Using CocoaPods
-* pod init
+`pod install` inside project directory
 
-* Open Podfile and add the following text:
-  platform :ios, '9.1'
-  use_frameworks!
+###Potential Uses
+*App can be used to show a student's current location
+*Can serve as a platform to solve problems via collaboration
+*Can be used to share useful insights on a particular topic of interest to the user
 
-  target 'OnTheMap' do
-
-  pod 'FBSDKCoreKit', '~> 4.8'
-  pod 'FBSDKLoginKit', '~> 4.8'
-
-  end
-  
-* pod install
+##License
+Code released under the [MIT license](https://github.com/Marquis103/OnTheMap/blob/master/License)
